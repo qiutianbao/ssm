@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.manager.mapper.DcSysMenuMapper">
+
+	<resultMap id="DcSysMenu" type="com.bigdata.datacenter.manager.entity.DcSysMenu">
+		<result property="id" column="ID"/>
+		<result property="systemCode" column="SYSTEM_CODE"/>
+		<result property="menuCode" column="MENU_CODE"/>
+		<result property="parentCode" column="PARENT_CODE"/>
+		<result property="menuName" column="MENU_NAME"/>
+		<result property="menuLink" column="MENU_LINK"/>
+		<result property="frameName" column="FRAME_NAME"/>
+		<result property="showOrder" column="SHOW_ORDER"/>
+	</resultMap>
+	
+	
+
+
+	<insert id="insert" parameterType="com.bigdata.datacenter.manager.entity.DcSysMenu" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO DC_SYS_MENU ( 
+			<trim prefixOverrides=",">
+			<if test="id != null"> ,ID </if>	
+			<if test="systemCode != null"> ,SYSTEM_CODE </if>	
+			<if test="menuCode != null"> ,MENU_CODE </if>	
+			<if test="parentCode != null"> ,PARENT_CODE </if>	
+			<if test="menuName != null"> ,MENU_NAME </if>	
+			<if test="menuLink != null"> ,MENU_LINK </if>	
+			<if test="frameName != null"> ,FRAME_NAME </if>	
+			<if test="showOrder != null"> ,SHOW_ORDER </if>	
+			</trim>
+		) VALUES (
+			<trim prefixOverrides=",">
+			<if test="id != null"> ,#{id} </if>		       
+			<if test="systemCode != null"> ,#{systemCode} </if>		       
+			<if test="menuCode != null"> ,#{menuCode} </if>		       
+			<if test="parentCode != null"> ,#{parentCode} </if>		       
+			<if test="menuName != null"> ,#{menuName} </if>		       
+			<if test="menuLink != null"> ,#{menuLink} </if>		       
+			<if test="frameName != null"> ,#{frameName} </if>		       
+			<if test="showOrder != null"> ,#{showOrder} </if>		       
+			</trim>
+		)
+	</insert>
+	
+	<delete id="delete">  
+		DELETE FROM DC_SYS_MENU
+		WHERE ID = #{id}
+	</delete>
+	
+	<update id="update" parameterType="com.bigdata.datacenter.manager.entity.DcSysMenu">  
+		UPDATE DC_SYS_MENU        
+		<set>
+			<if test="id != null"> ID = #{id}, </if>
+			<if test="systemCode != null"> SYSTEM_CODE = #{systemCode}, </if>
+			<if test="menuCode != null"> MENU_CODE = #{menuCode}, </if>
+			<if test="parentCode != null"> PARENT_CODE = #{parentCode}, </if>
+			<if test="menuName != null"> MENU_NAME = #{menuName}, </if>
+			<if test="menuLink != null"> MENU_LINK = #{menuLink}, </if>
+			<if test="frameName != null"> FRAME_NAME = #{frameName}, </if>
+			<if test="showOrder != null"> SHOW_ORDER = #{showOrder}, </if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+	
+	<select id="get" parameterType="java.util.Map" resultMap="DcSysMenu">  
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			MENU_CODE,
+			PARENT_CODE,
+			MENU_NAME,
+			MENU_LINK,
+			FRAME_NAME,
+			SHOW_ORDER
+		FROM DC_SYS_MENU
+		<where>
+			<if test="id != null"> ID = #{id} </if>
+		</where>
+	</select>
+	
+	<select id="list" parameterType="java.util.Map" resultMap="DcSysMenu">  
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			MENU_CODE,
+			PARENT_CODE,
+			MENU_NAME,
+			MENU_LINK,
+			FRAME_NAME,
+			SHOW_ORDER
+		FROM DC_SYS_MENU
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="menuCode != null"> AND MENU_CODE = #{menuCode} </if>
+			<if test="parentCode != null"> AND PARENT_CODE = #{parentCode} </if>
+			<if test="menuName != null"> AND MENU_NAME = #{menuName} </if>
+			<if test="menuLink != null"> AND MENU_LINK = #{menuLink} </if>
+			<if test="frameName != null"> AND FRAME_NAME = #{frameName} </if>
+			<if test="showOrder != null"> AND SHOW_ORDER = #{showOrder} </if>
+		</where>
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">  
+		SELECT COUNT(*) FROM DC_SYS_MENU
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="menuCode != null"> AND MENU_CODE = #{menuCode} </if>
+			<if test="parentCode != null"> AND PARENT_CODE = #{parentCode} </if>
+			<if test="menuName != null"> AND MENU_NAME = #{menuName} </if>
+			<if test="menuLink != null"> AND MENU_LINK = #{menuLink} </if>
+			<if test="frameName != null"> AND FRAME_NAME = #{frameName} </if>
+			<if test="showOrder != null"> AND SHOW_ORDER = #{showOrder} </if>
+		</where>
+	</select>
+
+
+	<select id="getSplitList" parameterType="java.util.Map" resultMap="DcSysMenu" >  
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			MENU_CODE,
+			PARENT_CODE,
+			MENU_NAME,
+			MENU_LINK,
+			FRAME_NAME,
+			SHOW_ORDER
+		FROM DC_SYS_MENU
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="menuCode != null"> AND MENU_CODE = #{menuCode} </if>
+			<if test="parentCode != null"> AND PARENT_CODE = #{parentCode} </if>
+			<if test="menuName != null"> AND MENU_NAME = #{menuName} </if>
+			<if test="menuLink != null"> AND MENU_LINK = #{menuLink} </if>
+			<if test="frameName != null"> AND FRAME_NAME = #{frameName} </if>
+			<if test="showOrder != null"> AND SHOW_ORDER = #{showOrder} </if>
+		</where>
+		Limit #{startrow} , #{pagesize}
+	</select>
+
+
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxtb.manager.mapper.sys.SysLoginLogMapper">
+
+	<resultMap id="sysLoginLog" type="com.jxtb.manager.entity.sys.SysLoginLog">
+		<result property="id" column="ID"/>
+		<result property="systemCode" column="SYSTEM_CODE"/>
+		<result property="loginName" column="LOGIN_NAME"/>
+		<result property="loginTime" column="LOGIN_TIME"/>
+		<result property="loginIp" column="LOGIN_IP"/>
+		<result property="loginInfo" column="LOGIN_INFO"/>
+	</resultMap>
+	
+	
+
+
+	<insert id="insert" parameterType="com.jxtb.manager.entity.sys.SysLoginLog">
+		INSERT INTO CBD_LOGIN_LOG (
+			<trim prefixOverrides=",">
+			ID
+			<if test="systemCode != null"> ,SYSTEM_CODE </if>	
+			<if test="loginName != null"> ,LOGIN_NAME </if>	
+			<if test="loginTime != null"> ,LOGIN_TIME </if>	
+			<if test="loginIp != null"> ,LOGIN_IP </if>	
+			<if test="loginInfo != null"> ,LOGIN_INFO </if>	
+			</trim>
+		) VALUES (
+			<trim prefixOverrides=",">
+			SEQ_DC_ID.nextval
+			<if test="systemCode != null"> ,#{systemCode} </if>		       
+			<if test="loginName != null"> ,#{loginName} </if>		       
+			<if test="loginTime != null"> ,#{loginTime} </if>		       
+			<if test="loginIp != null"> ,#{loginIp} </if>		       
+			<if test="loginInfo != null"> ,#{loginInfo} </if>		       
+			</trim>
+		)
+	</insert>
+	
+	<delete id="delete">  
+		DELETE FROM DC_SYS_LOGIN_LOG
+		WHERE ID = #{id}
+	</delete>
+	
+	<update id="update" parameterType="com.jxtb.manager.entity.sys.SysLoginLog">
+		UPDATE DC_SYS_LOGIN_LOG        
+		<set>
+			<if test="id != null"> ID = #{id}, </if>
+			<if test="systemCode != null"> SYSTEM_CODE = #{systemCode}, </if>
+			<if test="loginName != null"> LOGIN_NAME = #{loginName}, </if>
+			<if test="loginTime != null"> LOGIN_TIME = #{loginTime}, </if>
+			<if test="loginIp != null"> LOGIN_IP = #{loginIp}, </if>
+			<if test="loginInfo != null"> LOGIN_INFO = #{loginInfo}, </if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+	
+	<select id="get" parameterType="java.util.Map" resultMap="sysLoginLog">
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			LOGIN_NAME,
+			LOGIN_TIME,
+			LOGIN_IP,
+			LOGIN_INFO
+		FROM DC_SYS_LOGIN_LOG
+		<where>
+			<if test="id != null"> ID = #{id} </if>
+		</where>
+	</select>
+	
+	<select id="list" parameterType="java.util.Map" resultMap="sysLoginLog">
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			LOGIN_NAME,
+			LOGIN_TIME,
+			LOGIN_IP,
+			LOGIN_INFO
+		FROM DC_SYS_LOGIN_LOG
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="loginName != null"> AND LOGIN_NAME = #{loginName} </if>
+			<if test="loginTime != null"> AND LOGIN_TIME = #{loginTime} </if>
+			<if test="loginIp != null"> AND LOGIN_IP = #{loginIp} </if>
+			<if test="loginInfo != null"> AND LOGIN_INFO = #{loginInfo} </if>
+		</where>
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">  
+		SELECT COUNT(*) FROM DC_SYS_LOGIN_LOG
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="loginName != null"> AND LOGIN_NAME = #{loginName} </if>
+			<if test="loginTime != null"> AND LOGIN_TIME = #{loginTime} </if>
+			<if test="loginIp != null"> AND LOGIN_IP = #{loginIp} </if>
+			<if test="loginInfo != null"> AND LOGIN_INFO = #{loginInfo} </if>
+		</where>
+	</select>
+
+
+	<select id="getSplitList" parameterType="java.util.Map" resultMap="sysLoginLog" >
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			LOGIN_NAME,
+			LOGIN_TIME,
+			LOGIN_IP,
+			LOGIN_INFO
+		FROM DC_SYS_LOGIN_LOG
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="loginName != null"> AND LOGIN_NAME = #{loginName} </if>
+			<if test="loginTime != null"> AND LOGIN_TIME = #{loginTime} </if>
+			<if test="loginIp != null"> AND LOGIN_IP = #{loginIp} </if>
+			<if test="loginInfo != null"> AND LOGIN_INFO = #{loginInfo} </if>
+		</where>
+		Limit #{startrow} , #{pagesize}
+	</select>
+
+
+</mapper>

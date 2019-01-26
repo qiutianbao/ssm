@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/datacenter/!svn/ver/430/trunk/production/bd-datacenter-manager/WebRoot/dist/js
+END
+demo.js
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/datacenter/!svn/ver/430/trunk/production/bd-datacenter-manager/WebRoot/dist/js/demo.js
+END
+app.js
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/datacenter/!svn/ver/430/trunk/production/bd-datacenter-manager/WebRoot/dist/js/app.js
+END
+app.min.js
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/datacenter/!svn/ver/430/trunk/production/bd-datacenter-manager/WebRoot/dist/js/app.min.js
+END

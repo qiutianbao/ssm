@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/datacenter/!svn/ver/429/trunk/production/bd-datacenter-manager/WebRoot/bootstrap/js
+END
+npm.js
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/datacenter/!svn/ver/429/trunk/production/bd-datacenter-manager/WebRoot/bootstrap/js/npm.js
+END
+bootstrap.js
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/datacenter/!svn/ver/429/trunk/production/bd-datacenter-manager/WebRoot/bootstrap/js/bootstrap.js
+END
+bootstrap.min.js
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/datacenter/!svn/ver/429/trunk/production/bd-datacenter-manager/WebRoot/bootstrap/js/bootstrap.min.js
+END

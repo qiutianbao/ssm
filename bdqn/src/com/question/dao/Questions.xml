@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.question.dao.QuestionDao">
+	<resultMap type="com.question.entity.Questions" id="pquestionResult">
+		<result property="id" column="id"/>
+		<result property="title" column="title" />
+		<result property="detaildesc" column="detaildesc" />
+		<result property="answercount" column="answercount" />
+		<result property="lastmodified" column="lastmodified" />
+	</resultMap>
+	<!-- 查询所有 -->
+ 	<select id="findAllQuestion" resultMap="pquestionResult">
+		SELECT * FROM questions
+ 	</select>
+ 	<!-- 根据id号查询 -->
+ 	<select id="queryQuestionById" resultMap="pquestionResult">
+ 	   SELECT * FROM questions WHERE id=#{id}
+ 	</select>
+ 	<!-- 查询总数 -->
+ 	<select id="findTotalCount" resultType="int">
+ 	   SELECT count(*) FROM questions where 1=1
+ 	</select>
+ 	<!-- 插入 -->
+ 	<insert id="saveNewQuestion" parameterType="questions">
+		INSERT INTO questions(id,title,detaildesc,answercount,lastmodified) 
+		VALUES(sql_question.nextval,#{title},#{detaildesc},#{answercount},#{lastmodified})
+ 	</insert>
+ 	<!-- 删除 -->
+ 	<delete id="deleteQuestions" parameterType="questions">
+ 	   DELETE FROM questions WHERE id=#{id}
+ 	</delete>
+ 	<!-- 修改 -->
+ 	<update id="updateQuestion" parameterType="questions">
+ 	   update questions set title=#{title},
+ 	   detaildesc=#{detaildesc},answercount=#{answercount},
+ 	   lastmodified=#{lastmodified}
+ 	   WHERE id=#{id}
+ 	</update>
+ 	
+</mapper>

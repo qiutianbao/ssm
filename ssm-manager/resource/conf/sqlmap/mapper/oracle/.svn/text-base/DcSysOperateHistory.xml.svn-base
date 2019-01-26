@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.manager.mapper.DcSysOperateHistoryMapper">
+
+	<resultMap id="DcSysOperateHistory" type="com.bigdata.datacenter.manager.entity.DcSysOperateHistory">
+		<result property="id" column="ID"/>
+		<result property="operateLoginName" column="OPERATE_LOGIN_NAME"/>
+		<result property="operateTime" column="OPERATE_TIME"/>
+		<result property="systemCode" column="SYSTEM_CODE"/>
+		<result property="menuCode" column="MENU_CODE"/>
+		<result property="objectId" column="OBJECT_ID"/>
+		<result property="operateType" column="OPERATE_TYPE"/>
+		<result property="operateResult" column="OPERATE_RESULT"/>
+		<result property="operateContent" column="OPERATE_CONTENT"/>
+		<result property="pageUrl" column="PAGE_URL"/>
+		<result property="pageUri" column="PAGE_URI"/>
+		<result property="refererUrl" column="REFERER_URL"/>
+		<result property="operatorIp" column="OPERATOR_IP"/>
+	</resultMap>
+	
+	
+
+
+	<insert id="insert" parameterType="com.bigdata.datacenter.manager.entity.DcSysOperateHistory" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO DC_SYS_OPERATE_HISTORY ( 
+			<trim prefixOverrides=",">
+			<if test="id != null"> ,ID </if>	
+			<if test="operateLoginName != null"> ,OPERATE_LOGIN_NAME </if>	
+			<if test="operateTime != null"> ,OPERATE_TIME </if>	
+			<if test="systemCode != null"> ,SYSTEM_CODE </if>	
+			<if test="menuCode != null"> ,MENU_CODE </if>	
+			<if test="objectId != null"> ,OBJECT_ID </if>	
+			<if test="operateType != null"> ,OPERATE_TYPE </if>	
+			<if test="operateResult != null"> ,OPERATE_RESULT </if>	
+			<if test="operateContent != null"> ,OPERATE_CONTENT </if>	
+			<if test="pageUrl != null"> ,PAGE_URL </if>	
+			<if test="pageUri != null"> ,PAGE_URI </if>	
+			<if test="refererUrl != null"> ,REFERER_URL </if>	
+			<if test="operatorIp != null"> ,OPERATOR_IP </if>	
+			</trim>
+		) VALUES (
+			<trim prefixOverrides=",">
+			<if test="id != null"> ,#{id} </if>		       
+			<if test="operateLoginName != null"> ,#{operateLoginName} </if>		       
+			<if test="operateTime != null"> ,#{operateTime} </if>		       
+			<if test="systemCode != null"> ,#{systemCode} </if>		       
+			<if test="menuCode != null"> ,#{menuCode} </if>		       
+			<if test="objectId != null"> ,#{objectId} </if>		       
+			<if test="operateType != null"> ,#{operateType} </if>		       
+			<if test="operateResult != null"> ,#{operateResult} </if>		       
+			<if test="operateContent != null"> ,#{operateContent} </if>		       
+			<if test="pageUrl != null"> ,#{pageUrl} </if>		       
+			<if test="pageUri != null"> ,#{pageUri} </if>		       
+			<if test="refererUrl != null"> ,#{refererUrl} </if>		       
+			<if test="operatorIp != null"> ,#{operatorIp} </if>		       
+			</trim>
+		)
+	</insert>
+	
+	<delete id="delete">  
+		DELETE FROM DC_SYS_OPERATE_HISTORY
+		WHERE ID = #{id}
+	</delete>
+	
+	<update id="update" parameterType="com.bigdata.datacenter.manager.entity.DcSysOperateHistory">  
+		UPDATE DC_SYS_OPERATE_HISTORY        
+		<set>
+			<if test="id != null"> ID = #{id}, </if>
+			<if test="operateLoginName != null"> OPERATE_LOGIN_NAME = #{operateLoginName}, </if>
+			<if test="operateTime != null"> OPERATE_TIME = #{operateTime}, </if>
+			<if test="systemCode != null"> SYSTEM_CODE = #{systemCode}, </if>
+			<if test="menuCode != null"> MENU_CODE = #{menuCode}, </if>
+			<if test="objectId != null"> OBJECT_ID = #{objectId}, </if>
+			<if test="operateType != null"> OPERATE_TYPE = #{operateType}, </if>
+			<if test="operateResult != null"> OPERATE_RESULT = #{operateResult}, </if>
+			<if test="operateContent != null"> OPERATE_CONTENT = #{operateContent}, </if>
+			<if test="pageUrl != null"> PAGE_URL = #{pageUrl}, </if>
+			<if test="pageUri != null"> PAGE_URI = #{pageUri}, </if>
+			<if test="refererUrl != null"> REFERER_URL = #{refererUrl}, </if>
+			<if test="operatorIp != null"> OPERATOR_IP = #{operatorIp}, </if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+	
+	<select id="get" parameterType="java.util.Map" resultMap="DcSysOperateHistory">  
+		SELECT 
+			ID,
+			OPERATE_LOGIN_NAME,
+			OPERATE_TIME,
+			SYSTEM_CODE,
+			MENU_CODE,
+			OBJECT_ID,
+			OPERATE_TYPE,
+			OPERATE_RESULT,
+			OPERATE_CONTENT,
+			PAGE_URL,
+			PAGE_URI,
+			REFERER_URL,
+			OPERATOR_IP
+		FROM DC_SYS_OPERATE_HISTORY
+		<where>
+			<if test="id != null"> ID = #{id} </if>
+		</where>
+	</select>
+	
+	<select id="list" parameterType="java.util.Map" resultMap="DcSysOperateHistory">  
+		SELECT 
+			ID,
+			OPERATE_LOGIN_NAME,
+			OPERATE_TIME,
+			SYSTEM_CODE,
+			MENU_CODE,
+			OBJECT_ID,
+			OPERATE_TYPE,
+			OPERATE_RESULT,
+			OPERATE_CONTENT,
+			PAGE_URL,
+			PAGE_URI,
+			REFERER_URL,
+			OPERATOR_IP
+		FROM DC_SYS_OPERATE_HISTORY
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="operateLoginName != null"> AND OPERATE_LOGIN_NAME = #{operateLoginName} </if>
+			<if test="operateTime != null"> AND OPERATE_TIME = #{operateTime} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="menuCode != null"> AND MENU_CODE = #{menuCode} </if>
+			<if test="objectId != null"> AND OBJECT_ID = #{objectId} </if>
+			<if test="operateType != null"> AND OPERATE_TYPE = #{operateType} </if>
+			<if test="operateResult != null"> AND OPERATE_RESULT = #{operateResult} </if>
+			<if test="operateContent != null"> AND OPERATE_CONTENT = #{operateContent} </if>
+			<if test="pageUrl != null"> AND PAGE_URL = #{pageUrl} </if>
+			<if test="pageUri != null"> AND PAGE_URI = #{pageUri} </if>
+			<if test="refererUrl != null"> AND REFERER_URL = #{refererUrl} </if>
+			<if test="operatorIp != null"> AND OPERATOR_IP = #{operatorIp} </if>
+		</where>
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">  
+		SELECT COUNT(*) FROM DC_SYS_OPERATE_HISTORY
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="operateLoginName != null"> AND OPERATE_LOGIN_NAME = #{operateLoginName} </if>
+			<if test="operateTime != null"> AND OPERATE_TIME = #{operateTime} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="menuCode != null"> AND MENU_CODE = #{menuCode} </if>
+			<if test="objectId != null"> AND OBJECT_ID = #{objectId} </if>
+			<if test="operateType != null"> AND OPERATE_TYPE = #{operateType} </if>
+			<if test="operateResult != null"> AND OPERATE_RESULT = #{operateResult} </if>
+			<if test="operateContent != null"> AND OPERATE_CONTENT = #{operateContent} </if>
+			<if test="pageUrl != null"> AND PAGE_URL = #{pageUrl} </if>
+			<if test="pageUri != null"> AND PAGE_URI = #{pageUri} </if>
+			<if test="refererUrl != null"> AND REFERER_URL = #{refererUrl} </if>
+			<if test="operatorIp != null"> AND OPERATOR_IP = #{operatorIp} </if>
+		</where>
+	</select>
+
+
+	<select id="getSplitList" parameterType="java.util.Map" resultMap="DcSysOperateHistory" >  
+		SELECT 
+			ID,
+			OPERATE_LOGIN_NAME,
+			OPERATE_TIME,
+			SYSTEM_CODE,
+			MENU_CODE,
+			OBJECT_ID,
+			OPERATE_TYPE,
+			OPERATE_RESULT,
+			OPERATE_CONTENT,
+			PAGE_URL,
+			PAGE_URI,
+			REFERER_URL,
+			OPERATOR_IP
+		FROM DC_SYS_OPERATE_HISTORY
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="operateLoginName != null"> AND OPERATE_LOGIN_NAME = #{operateLoginName} </if>
+			<if test="operateTime != null"> AND OPERATE_TIME = #{operateTime} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="menuCode != null"> AND MENU_CODE = #{menuCode} </if>
+			<if test="objectId != null"> AND OBJECT_ID = #{objectId} </if>
+			<if test="operateType != null"> AND OPERATE_TYPE = #{operateType} </if>
+			<if test="operateResult != null"> AND OPERATE_RESULT = #{operateResult} </if>
+			<if test="operateContent != null"> AND OPERATE_CONTENT = #{operateContent} </if>
+			<if test="pageUrl != null"> AND PAGE_URL = #{pageUrl} </if>
+			<if test="pageUri != null"> AND PAGE_URI = #{pageUri} </if>
+			<if test="refererUrl != null"> AND REFERER_URL = #{refererUrl} </if>
+			<if test="operatorIp != null"> AND OPERATOR_IP = #{operatorIp} </if>
+		</where>
+		Limit #{startrow} , #{pagesize}
+	</select>
+
+
+</mapper>

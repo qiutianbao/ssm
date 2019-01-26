@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.portal.mapper.ResearchReportMapper">
+
+	<resultMap id="ResearchReport" type="com.bigdata.datacenter.portal.entity.ResearchReport">
+		<result property="pub_dt" column="PUB_DT"/>
+		<result property="tit" column="TIT"/>
+		<result property="com_name" column="COM_NAME"/>
+		<result property="aut" column="AUT"/>
+		<result property="rat_orig_desc" column="RAT_ORIG_DESC"/>
+		<result property="cst_desc" column="CST_DESC"/>
+		<result property="rat_code" column="RAT_CODE"/>
+		<result property="abst_sht_id" column="ABST_SHT_ID"/>
+		<result property="abst_sht" column="ABST_SHT"/>
+		<result property="ann_page" column="ANN_PAGE"/>
+		<result property="ann_fmt" column="ANN_FMT"/>
+		<result property="cont_id" column="CONT_ID"/>
+		<result property="sn" column="SN"/>
+	</resultMap>
+	
+	<select id="listResearchReportByType" resultMap="ResearchReport">
+		SELECT TO_CHAR(PUB_DT, 'YYYY-MM-DD') AS PUB_DT,
+			       A.TIT,
+			       A.COM_NAME,
+			       A.AUT,
+			       C.RAT_ORIG_DESC,
+			       D.CST_DESC,
+			       C.RAT_CODE,
+			       B.ID AS ABST_SHT_ID
+			  FROM RRP_RPT_BAS A
+			  LEFT JOIN RRP_RPT_SUP B
+			    ON A.ID = B.ORIG_ID
+			  LEFT JOIN (SELECT x1.orig_id, X1.RAT_ORIG_DESC, X1.RAT_CODE
+			               FROM RRP_RPT_SECU_RAT X1
+			               JOIN (SELECT MIN(xx1.ID) AS ID, xx1.orig_id
+			                      FROM RRP_RPT_SECU_RAT xx1
+			                     GROUP BY orig_id) X2
+			                 ON x1.id = x2.id) C
+			    ON A.id = C.orig_id
+			  JOIN BAS_CST_INFO D
+			    ON A.RPT_TYP_CODE = D.CST_NUM
+			   AND D.CST_TYP = 10015
+			   <if test="params.length!=0">
+			 		WHERE A.RPT_TYP_CODE IN 
+			 		<foreach collection="params" item="item" open="(" close=")" separator=",">
+			 			${item}
+			 		</foreach>
+			   </if>
+			   AND A.PUB_DT >= ADD_MONTHS(TRUNC(SYSDATE), -1)
+	</select>
+	
+	<select id="listResearchReportByIndustry" resultMap="ResearchReport">
+		SELECT TO_CHAR(PUB_DT, 'YYYY-MM-DD') AS PUB_DT,
+			       A.TIT,
+			       A.COM_NAME,
+			       A.AUT,
+			       C.RAT_ORIG_DESC,
+			       D.CST_DESC,
+			       C.RAT_CODE
+			  FROM RRP_RPT_BAS A
+			  LEFT JOIN RRP_RPT_SUP B
+			    ON A.ID = B.ORIG_ID
+			  LEFT JOIN (SELECT x1.orig_id, X1.RAT_ORIG_DESC, X1.RAT_CODE
+			               FROM RRP_RPT_SECU_RAT X1
+			               JOIN (SELECT MIN(xx1.ID) AS ID, xx1.orig_id
+			                      FROM RRP_RPT_SECU_RAT xx1
+			                     GROUP BY orig_id) X2
+			                 ON x1.id = x2.id) C
+			    ON A.id = C.orig_id
+			  JOIN BAS_CST_INFO D
+			    ON A.RPT_TYP_CODE = D.CST_NUM
+			   AND D.CST_TYP = 10015
+			  JOIN RRP_RPT_INDU F
+			    ON A.ID = F.ORIG_ID
+			    <if test="subLength!=null and value!=null">
+			    	 WHERE SUBSTR(F.INDU_ID, 1, ${subLength}) = ${value}
+			    </if>
+			   AND A.PUB_DT >= ADD_MONTHS(TRUNC(SYSDATE), -1)
+	</select>
+	
+	<select id="findAbstSht" resultMap="ResearchReport">
+		SELECT   A.TIT AS TIT
+		        ,TO_CHAR(A.PUB_DT,'YYYY-MM-DD') AS PUB_DT 
+		        ,A.COM_NAME AS COM_NAME
+		        ,A.AUT AS AUT
+		        ,C.RAT_ORIG_DESC   
+		        ,C.RAT_CODE      
+		        ,B.ABST_SHT  
+		        ,D.CST_DESC 
+		FROM RRP_RPT_BAS A
+		LEFT JOIN RRP_RPT_SUP B ON A.ID = B.ORIG_ID
+		LEFT JOIN (
+		      SELECT x1.orig_id,X1.RAT_ORIG_DESC,X1.RAT_CODE
+		      FROM RRP_RPT_SECU_RAT X1
+		      JOIN (
+		           SELECT MIN(xx1.ID) AS ID,xx1.orig_id
+		           FROM RRP_RPT_SECU_RAT xx1        
+		           GROUP BY orig_id
+		           )X2 ON x1.id = x2.id
+		      ) C ON A.id=C.orig_id 
+		 JOIN BAS_CST_INFO D ON A.RPT_TYP_CODE=D.CST_NUM AND D.CST_TYP=10015
+		WHERE B.ID=${abst_sht_id}
+	</select>
+	
+	<select id="getCountByType" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT count(*)
+			  FROM RRP_RPT_BAS A
+			  LEFT JOIN RRP_RPT_SUP B
+			    ON A.ID = B.ORIG_ID
+			  LEFT JOIN (SELECT x1.orig_id, X1.RAT_ORIG_DESC, X1.RAT_CODE
+			               FROM RRP_RPT_SECU_RAT X1
+			               JOIN (SELECT MIN(xx1.ID) AS ID, xx1.orig_id
+			                      FROM RRP_RPT_SECU_RAT xx1
+			                     GROUP BY orig_id) X2
+			                 ON x1.id = x2.id) C
+			    ON A.id = C.orig_id
+			  JOIN BAS_CST_INFO D
+			    ON A.RPT_TYP_CODE = D.CST_NUM
+			   AND D.CST_TYP = 10015
+			   <if test="params.length!=0">
+			 		WHERE A.RPT_TYP_CODE IN 
+			 		<foreach collection="params" item="item" open="(" close=")" separator=",">
+			 			${item}
+			 		</foreach>
+			   </if>
+			   <if test="secuId != null">
+			    	AND EXISTS(SELECT 1 FROM TXT_NWS_SECU S WHERE A.ID = S.ORIG_ID AND S.SECU_ID = #{secuId})
+			    </if>
+			    <if test="tit != null">
+			    	AND A.TIT LIKE '%${tit}%'
+			    </if>
+			     <if test="aut != null">
+			    	AND A.AUT LIKE '%${aut}%'
+			    </if>
+			    <if test="com_name != null">
+			    	AND A.COM_NAME LIKE '%${com_name}%'
+			    </if>
+			    <if test="sDate != null">
+			    	AND A.PUB_DT >= to_date(#{sDate},'yyyy-MM-dd')
+			    </if>
+			    <if test="eDate != null">
+			    	AND A.PUB_DT &lt;= to_date(#{eDate},'yyyy-MM-dd')
+			    </if>
+	</select>
+	
+	<select id="getSplitListByType" parameterType="java.util.Map" resultMap="ResearchReport">
+		SELECT PUB_DT,
+		       TIT,
+		       COM_NAME,
+		       AUT,
+		       RAT_ORIG_DESC,
+		       CST_DESC,
+		       RAT_CODE,
+		       ABST_SHT_ID
+		FROM
+		(Select rownum r, T.* from
+		(SELECT TO_CHAR(PUB_DT, 'YYYY-MM-DD') AS PUB_DT,
+			       A.TIT,
+			       A.COM_NAME,
+			       A.AUT,
+			       C.RAT_ORIG_DESC,
+			       D.CST_DESC,
+			       C.RAT_CODE,
+			       B.ID AS ABST_SHT_ID
+			  FROM RRP_RPT_BAS A
+			  LEFT JOIN RRP_RPT_SUP B
+			    ON A.ID = B.ORIG_ID
+			  LEFT JOIN (SELECT x1.orig_id, X1.RAT_ORIG_DESC, X1.RAT_CODE
+			               FROM RRP_RPT_SECU_RAT X1
+			               JOIN (SELECT MIN(xx1.ID) AS ID, xx1.orig_id
+			                      FROM RRP_RPT_SECU_RAT xx1
+			                     GROUP BY orig_id) X2
+			                 ON x1.id = x2.id) C
+			    ON A.id = C.orig_id
+			  JOIN BAS_CST_INFO D
+			    ON A.RPT_TYP_CODE = D.CST_NUM
+			   AND D.CST_TYP = 10015
+			   <if test="params.length!=0">
+			 		WHERE A.RPT_TYP_CODE IN 
+			 		<foreach collection="params" item="item" open="(" close=")" separator=",">
+			 			${item}
+			 		</foreach>
+			   </if>
+			   <if test="secuId != null">
+			    	AND EXISTS(SELECT 1 FROM TXT_NWS_SECU S WHERE A.ID = S.ORIG_ID AND S.SECU_ID = #{secuId})
+			    </if>
+			    <if test="tit != null">
+			    	AND A.TIT LIKE '%${tit}%'
+			    </if>
+			     <if test="aut != null">
+			    	AND A.AUT LIKE '%${aut}%'
+			    </if>
+			    <if test="com_name != null">
+			    	AND A.COM_NAME LIKE '%${com_name}%'
+			    </if>
+			    <if test="sDate != null">
+			    	AND A.PUB_DT >= to_date(#{sDate},'yyyy-MM-dd')
+			    </if>
+			    <if test="eDate != null">
+			    	AND A.PUB_DT &lt;= to_date(#{eDate},'yyyy-MM-dd')
+			    </if>
+			   ) T )
+			   where r &gt; #{startrow} and r &lt;= #{endrow}
+	</select>
+	
+	<select id="getCountByIndustry" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+			  FROM RRP_RPT_BAS A
+			  LEFT JOIN RRP_RPT_SUP B
+			    ON A.ID = B.ORIG_ID
+			  LEFT JOIN (SELECT x1.orig_id, X1.RAT_ORIG_DESC, X1.RAT_CODE
+			               FROM RRP_RPT_SECU_RAT X1
+			               JOIN (SELECT MIN(xx1.ID) AS ID, xx1.orig_id
+			                      FROM RRP_RPT_SECU_RAT xx1
+			                     GROUP BY orig_id) X2
+			                 ON x1.id = x2.id) C
+			    ON A.id = C.orig_id
+			  JOIN BAS_CST_INFO D
+			    ON A.RPT_TYP_CODE = D.CST_NUM
+			   AND D.CST_TYP = 10015
+			  JOIN RRP_RPT_INDU F
+			    ON A.ID = F.ORIG_ID
+			    <if test="subLength!=null and value!=null">
+			    	 WHERE SUBSTR(F.INDU_ID, 1, ${subLength}) = ${value}
+			    </if>
+			    <if test="secuId != null">
+			    	AND EXISTS(SELECT 1 FROM TXT_NWS_SECU S WHERE A.ID = S.ORIG_ID AND S.SECU_ID = #{secuId})
+			    </if>
+			    <if test="tit != null">
+			    	AND A.TIT LIKE '%${tit}%'
+			    </if>
+			     <if test="aut != null">
+			    	AND A.AUT LIKE '%${aut}%'
+			    </if>
+			    <if test="com_name != null">
+			    	AND A.COM_NAME LIKE '%${com_name}%'
+			    </if>
+			    <if test="sDate != null">
+			    	AND A.PUB_DT >= to_date(#{sDate},'yyyy-MM-dd')
+			    </if>
+			    <if test="eDate != null">
+			    	AND A.PUB_DT &lt;= to_date(#{eDate},'yyyy-MM-dd')
+			    </if>
+	</select>
+	
+	<select id="getSplitListByIndustry" parameterType="java.util.Map" resultMap="ResearchReport">
+		SELECT PUB_DT,
+		       TIT,
+		       COM_NAME,
+		       AUT,
+		       RAT_ORIG_DESC,
+		       CST_DESC,
+		       RAT_CODE
+		FROM
+		(Select rownum r, T.* from
+		(SELECT TO_CHAR(PUB_DT, 'YYYY-MM-DD') AS PUB_DT,
+			       A.TIT,
+			       A.COM_NAME,
+			       A.AUT,
+			       C.RAT_ORIG_DESC,
+			       D.CST_DESC,
+			       C.RAT_CODE
+			  FROM RRP_RPT_BAS A
+			  LEFT JOIN RRP_RPT_SUP B
+			    ON A.ID = B.ORIG_ID
+			  LEFT JOIN (SELECT x1.orig_id, X1.RAT_ORIG_DESC, X1.RAT_CODE
+			               FROM RRP_RPT_SECU_RAT X1
+			               JOIN (SELECT MIN(xx1.ID) AS ID, xx1.orig_id
+			                      FROM RRP_RPT_SECU_RAT xx1
+			                     GROUP BY orig_id) X2
+			                 ON x1.id = x2.id) C
+			    ON A.id = C.orig_id
+			  JOIN BAS_CST_INFO D
+			    ON A.RPT_TYP_CODE = D.CST_NUM
+			   AND D.CST_TYP = 10015
+			  JOIN RRP_RPT_INDU F
+			    ON A.ID = F.ORIG_ID
+			    <if test="subLength!=null and value!=null">
+			    	 WHERE SUBSTR(F.INDU_ID, 1, ${subLength}) = ${value}
+			    </if>
+			    <if test="secuId != null">
+			    	AND EXISTS(SELECT 1 FROM TXT_NWS_SECU S WHERE A.ID = S.ORIG_ID AND S.SECU_ID = #{secuId})
+			    </if>
+			    <if test="tit != null">
+			    	AND A.TIT LIKE '%${tit}%'
+			    </if>
+			     <if test="aut != null">
+			    	AND A.AUT LIKE '%${aut}%'
+			    </if>
+			    <if test="com_name != null">
+			    	AND A.COM_NAME LIKE '%${com_name}%'
+			    </if>
+			    <if test="sDate != null">
+			    	AND A.PUB_DT >= to_date(#{sDate},'yyyy-MM-dd')
+			    </if>
+			    <if test="eDate != null">
+			    	AND A.PUB_DT &lt;= to_date(#{eDate},'yyyy-MM-dd')
+			    </if>
+			   ) T )
+			    where r &gt; #{startrow} and r &lt;= #{endrow}
+	</select>
+	
+</mapper>

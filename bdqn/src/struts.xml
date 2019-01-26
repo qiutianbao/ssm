@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+   <constant name="struts.devMode" value="true"></constant>
+	<package name="default" extends="struts-default" namespace="/">
+	    <!-- 查询所有问题 -->
+		<action name="findAll" class="com.question.action.QuestionAction" method="findAllQuestion">
+			<result name="findAll_succ">/page/questionList.jsp</result>
+		</action>
+		<!-- 根据编号查询问题 -->
+        <action name="questionById" class="com.question.action.QuestionAction" method="queryQuestionById">
+           <result name="find_succ">/page/updateQuestion.jsp</result>
+        </action>
+        <!-- 保存新问题 -->
+        <action name="addQuestion" class="com.question.action.QuestionAction" method="saveNewQuestion">
+            <result name="add_succ" type="redirectAction">findAll</result>
+            <result name="add_fail">/page/addQuestion.jsp</result>
+        </action>
+        <!-- 删除问题 -->
+        <action name="deleteQuestion" class="com.question.action.QuestionAction" method="deleteQuestions">
+           <result name="delete_succ" type="redirectAction">findAll</result>
+           <result name="delete_fail" >page/fail.jsp</result>
+        </action>
+        <!-- 修改问题 -->
+        <action name="updateQuestion" class="com.question.action.QuestionAction" method="updateQuestions">
+           <result name="update_succ" type="redirectAction">findAll</result>
+           <result name="update_fail">/page/updateQuestion.jsp</result>
+        </action>
+        
+    </package>
+  
+</struts>    

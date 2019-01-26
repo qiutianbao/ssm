@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/datacenter/!svn/ver/486/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle
+END
+DcSysLoginLog.xml
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/datacenter/!svn/ver/428/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysLoginLog.xml
+END
+DcSysDept.xml
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/datacenter/!svn/ver/428/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysDept.xml
+END
+DcSysUser.xml
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/datacenter/!svn/ver/428/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysUser.xml
+END
+DcSysRights.xml
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/datacenter/!svn/ver/428/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysRights.xml
+END
+DcSysRoleUser.xml
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/datacenter/!svn/ver/470/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysRoleUser.xml
+END
+DcSysOperateHistory.xml
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/datacenter/!svn/ver/428/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysOperateHistory.xml
+END
+DcSysRole.xml
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/datacenter/!svn/ver/486/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysRole.xml
+END
+DcSysRoleRights.xml
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/datacenter/!svn/ver/428/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysRoleRights.xml
+END
+DcSysMenu.xml
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/datacenter/!svn/ver/428/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysMenu.xml
+END
+DcSysSystem.xml
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/datacenter/!svn/ver/428/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysSystem.xml
+END
+DcSysRoleMenu.xml
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/datacenter/!svn/ver/428/trunk/production/bd-datacenter-manager/resource/conf/sqlmap/mapper/oracle/DcSysRoleMenu.xml
+END

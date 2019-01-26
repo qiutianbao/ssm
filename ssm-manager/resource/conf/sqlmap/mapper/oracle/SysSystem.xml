@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxtb.manager.mapper.sys.SysSystemMapper">
+
+	<resultMap id="DcSysSystem" type="com.jxtb.manager.entity.sys.SysSystem">
+		<result property="id" column="ID"/>
+		<result property="systemCode" column="SYSTEM_CODE"/>
+		<result property="systemName" column="SYSTEM_NAME"/>
+		<result property="systemMemo" column="SYSTEM_MEMO"/>
+	</resultMap>
+	
+	
+
+
+	<insert id="insert" parameterType="com.jxtb.manager.entity.sys.SysSystem" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO DC_SYS_SYSTEM ( 
+			<trim prefixOverrides=",">
+			<if test="id != null"> ,ID </if>	
+			<if test="systemCode != null"> ,SYSTEM_CODE </if>	
+			<if test="systemName != null"> ,SYSTEM_NAME </if>	
+			<if test="systemMemo != null"> ,SYSTEM_MEMO </if>	
+			</trim>
+		) VALUES (
+			<trim prefixOverrides=",">
+			<if test="id != null"> ,#{id} </if>		       
+			<if test="systemCode != null"> ,#{systemCode} </if>		       
+			<if test="systemName != null"> ,#{systemName} </if>		       
+			<if test="systemMemo != null"> ,#{systemMemo} </if>		       
+			</trim>
+		)
+	</insert>
+	
+	<delete id="delete">  
+		DELETE FROM DC_SYS_SYSTEM
+		WHERE ID = #{id}
+	</delete>
+	
+	<update id="update" parameterType="com.jxtb.manager.entity.sys.SysSystem">
+		UPDATE DC_SYS_SYSTEM        
+		<set>
+			<if test="id != null"> ID = #{id}, </if>
+			<if test="systemCode != null"> SYSTEM_CODE = #{systemCode}, </if>
+			<if test="systemName != null"> SYSTEM_NAME = #{systemName}, </if>
+			<if test="systemMemo != null"> SYSTEM_MEMO = #{systemMemo}, </if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+	
+	<select id="get" parameterType="java.util.Map" resultMap="DcSysSystem">  
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			SYSTEM_NAME,
+			SYSTEM_MEMO
+		FROM DC_SYS_SYSTEM
+		<where>
+			<if test="id != null"> ID = #{id} </if>
+		</where>
+	</select>
+	
+	<select id="list" parameterType="java.util.Map" resultMap="DcSysSystem">  
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			SYSTEM_NAME,
+			SYSTEM_MEMO
+		FROM DC_SYS_SYSTEM
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="systemName != null"> AND SYSTEM_NAME = #{systemName} </if>
+			<if test="systemMemo != null"> AND SYSTEM_MEMO = #{systemMemo} </if>
+		</where>
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">  
+		SELECT COUNT(*) FROM DC_SYS_SYSTEM
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="systemName != null"> AND SYSTEM_NAME = #{systemName} </if>
+			<if test="systemMemo != null"> AND SYSTEM_MEMO = #{systemMemo} </if>
+		</where>
+	</select>
+
+
+	<select id="getSplitList" parameterType="java.util.Map" resultMap="DcSysSystem" >  
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			SYSTEM_NAME,
+			SYSTEM_MEMO
+		FROM DC_SYS_SYSTEM
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="systemName != null"> AND SYSTEM_NAME = #{systemName} </if>
+			<if test="systemMemo != null"> AND SYSTEM_MEMO = #{systemMemo} </if>
+		</where>
+		Limit #{startrow} , #{pagesize}
+	</select>
+
+
+</mapper>

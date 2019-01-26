@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+	<!-- 证券信息缓存 -->  
+	<bean id="secuCache" class="com.jxtb.portal.cache.SecuCache"/>
+    
+	<!-- 每60分钟载入缓存数据  start-->
+    <bean id="LoadSecuCacheDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+       <property name="targetObject" ref="secuCache" />
+       <property name="targetMethod" value="loadSecuCache" />
+       <property name="concurrent" value="false" />
+    </bean>
+    
+    <bean id="LoadSecuCacheTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+       <property name="jobDetail" ref="LoadSecuCacheDetail" />
+       <property name="startDelay" value="100" />
+       <property name="repeatInterval" value="3600000" />
+    </bean>
+    <!-- end -->
+    
+    <!-- 数据信息缓存 -->  
+	<bean id="dataCache" class="com.jxtb.portal.cache.DataCache"/>
+    
+	<!-- 每60分钟载入缓存数据  start-->
+    <bean id="LoadDataCacheDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+       <property name="targetObject" ref="dataCache" />
+       <property name="targetMethod" value="loadDataCache" />
+       <property name="concurrent" value="false" />
+    </bean>
+    
+    <bean id="LoadDataCacheTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+       <property name="jobDetail" ref="LoadDataCacheDetail" />
+       <property name="startDelay" value="100" />
+       <property name="repeatInterval" value="3600000" />
+    </bean>
+    <!-- end -->
+    
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+            	<ref bean="LoadSecuCacheTrigger" />
+            	<ref bean="LoadDataCacheTrigger" />
+            </list>
+        </property>
+    </bean>
+	
+</beans>

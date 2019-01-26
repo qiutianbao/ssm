@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/ckeditor
+END
+ckeditor.js
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/ckeditor/ckeditor.js
+END
+config.js
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/ckeditor/config.js
+END
+LICENSE.md
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/ckeditor/LICENSE.md
+END
+contents.css
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/ckeditor/contents.css
+END
+CHANGES.md
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/ckeditor/CHANGES.md
+END
+README.md
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/ckeditor/README.md
+END
+build-config.js
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/ckeditor/build-config.js
+END
+styles.js
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/ckeditor/styles.js
+END

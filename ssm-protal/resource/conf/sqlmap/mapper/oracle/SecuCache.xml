@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.portal.mapper.SecuCacheMapper">
+
+	<resultMap id="SecuInfo" type="java.util.HashMap">
+		<result property="trdCode" column="TRD_CODE"/>
+		<result property="secuSht" column="SECU_SHT"/>
+		<result property="pySht" column="PY_SHT"/>
+		<result property="typDesc" column="TYP_DESC"/>
+		<result property="typCodei" column="TYP_CODEI"/>
+		<result property="typCodeii" column="TYP_CODEII"/>
+		<result property="secuId" column="SECU_ID"/>
+		<result property="lstStsCode" column="LST_STS_CODE"/>
+		<result property="lstDt" column="LST_DT"/>
+		<result property="exchCode" column="EXCH_CODE"/>
+	</resultMap>
+	
+	<!-- 获取证券缓存信息 -->
+	<select id="listSecuInfo" parameterType="java.util.Map" resultMap="SecuInfo">  
+		SELECT TRD_CODE,
+	           SECU_SHT,
+	           PY_SHT,
+	           TYP_DESC,
+	           TYP_CODEI,
+	           TYP_CODEII,
+	           SECU_ID,
+	           LST_STS_CODE,
+	           LST_DT,
+	           EXCH_CODE
+	      FROM BAS_SECU_INFO
+	     WHERE TYP_CODEI IN (10, 11)
+	       AND TYP_CODEII IN (1001,1003,1101,1102)
+	     ORDER BY TRD_CODE, TYP_CODEII
+	</select>
+	
+	
+</mapper>

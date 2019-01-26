@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.portal.mapper.CompanyNoticeMapper">
+
+	<resultMap id="CompanyNotice" type="com.bigdata.datacenter.portal.entity.CompanyNotice">
+		<result property="secu_id" column="SECU_ID"/>
+		<result property="pub_dt" column="PUB_DT"/>
+		<result property="tit" column="TIT"/>
+		<result property="trd_code" column="TRD_CODE"/>
+		<result property="secu_sht" column="SECU_SHT"/>
+		<result property="cst_desc" column="CST_DESC"/>
+	</resultMap>
+
+	<select id="listCompanyNotice" resultMap="CompanyNotice">
+		SELECT D.SECU_ID 
+		       ,D.TRD_CODE
+		       ,D.SECU_SHT       
+		       ,to_char(A.PUB_DT, 'yyyy-mm-dd') as PUB_DT
+		       ,A.TIT
+		       ,E.CST_DESC      
+		FROM TXT_BLT_BAS A 
+		JOIN TXT_BLT_TYP B ON A.ID=B.ORIG_ID
+		JOIN TXT_BLT_SECU C ON A.ID=C.ORIG_ID
+		<if test="flag==0">
+			JOIN STKCN_BAS_INFO D ON C.SECU_ID=D.SECU_ID AND D.EXCH_CODE IN (101,105)
+		</if>
+		<if test="flag==1">
+			JOIN STKCN_BAS_INFO D ON C.SECU_ID=D.SECU_ID AND D.EXCH_CODE=111
+		</if>
+		<if test="flag==2">
+			JOIN STKCN_BAS_INFO D ON C.SECU_ID=D.SECU_ID
+		</if>
+		JOIN BAS_CST_INFO E ON B.TYP_CODE =E.CST_NUM  
+		WHERE E.CST_TYP=10100   
+		AND E.CST_LVL IN(1,2,3)
+		<if test="subLength!=0 and params.length!=0">
+			AND substr(B.typ_code,1,${subLength}) in
+			<foreach collection="params" item="item" open="(" close=")" separator=",">
+				${item}
+			</foreach>
+		</if>
+		<if test="subLength=0 and params.length!=0">
+			AND B.typ_code in
+			<foreach collection="params" item="item" open="(" close=")" separator=",">
+				${item}
+			</foreach>
+		</if>       
+		ORDER BY A.PUB_DT DESC,B.TYP_CODE
+		<if test="flag==0 or flag==1">
+			,D.TRD_CODE 
+		</if>
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT COUNT(*)  
+		FROM TXT_BLT_BAS A 
+		JOIN TXT_BLT_TYP B ON A.ID=B.ORIG_ID
+		JOIN TXT_BLT_SECU C ON A.ID=C.ORIG_ID
+		<if test="flag==0">
+			JOIN STKCN_BAS_INFO D ON C.SECU_ID=D.SECU_ID AND D.EXCH_CODE IN (101,105)
+		</if>
+		<if test="flag==1">
+			JOIN STKCN_BAS_INFO D ON C.SECU_ID=D.SECU_ID AND D.EXCH_CODE=111
+		</if>
+		<if test="flag==2">
+			JOIN STKCN_BAS_INFO D ON C.SECU_ID=D.SECU_ID
+		</if>
+		JOIN BAS_CST_INFO E ON B.TYP_CODE =E.CST_NUM  
+		WHERE E.CST_TYP=10100   
+		AND E.CST_LVL IN(1,2,3)
+		<if test="subLength!=0 and params.length!=0">
+			AND substr(B.typ_code,1,${subLength}) in
+			<foreach collection="params" item="item" open="(" close=")" separator=",">
+				${item}
+			</foreach>
+		</if>
+		<if test="subLength=0 and params.length!=0">
+			AND B.typ_code in
+			<foreach collection="params" item="item" open="(" close=")" separator=",">
+				${item}
+			</foreach>
+		</if>
+		<if test="tit != null">
+	    	AND A.TIT LIKE '%${tit}%'
+	    </if>
+	    <if test="trd_code != null">
+	    	AND D.TRD_CODE LIKE '%${trd_code}%'
+	    </if>
+		<if test="secu_sht != null">
+	    	AND D.SECU_SHT LIKE '%${secu_sht}%'
+	    </if>
+	    <if test="sDate != null">
+	    	AND A.PUB_DT >= to_date(#{sDate},'yyyy-MM-dd')
+	    </if>
+	    <if test="eDate != null">
+	    	AND A.PUB_DT &lt;= to_date(#{eDate},'yyyy-MM-dd')
+	    </if>        
+		ORDER BY A.PUB_DT DESC,B.TYP_CODE
+		<if test="flag==0 or flag==1">
+			,D.TRD_CODE 
+		</if>
+	</select>
+	
+	<select id="getSplitList" parameterType="java.util.Map" resultMap="CompanyNotice">
+		SELECT SECU_ID 
+		       ,TRD_CODE
+		       ,SECU_SHT       
+		       ,PUB_DT
+		       ,TIT
+		       ,CST_DESC   
+		FROM
+		(Select rownum r, T.* from
+		(SELECT D.SECU_ID 
+		       ,D.TRD_CODE
+		       ,D.SECU_SHT       
+		       ,to_char(A.PUB_DT, 'yyyy-mm-dd') as PUB_DT
+		       ,A.TIT
+		       ,E.CST_DESC      
+		FROM TXT_BLT_BAS A 
+		JOIN TXT_BLT_TYP B ON A.ID=B.ORIG_ID
+		JOIN TXT_BLT_SECU C ON A.ID=C.ORIG_ID
+		<if test="flag==0">
+			JOIN STKCN_BAS_INFO D ON C.SECU_ID=D.SECU_ID AND D.EXCH_CODE IN (101,105)
+		</if>
+		<if test="flag==1">
+			JOIN STKCN_BAS_INFO D ON C.SECU_ID=D.SECU_ID AND D.EXCH_CODE=111
+		</if>
+		<if test="flag==2">
+			JOIN STKCN_BAS_INFO D ON C.SECU_ID=D.SECU_ID
+		</if>
+		JOIN BAS_CST_INFO E ON B.TYP_CODE =E.CST_NUM  
+		WHERE E.CST_TYP=10100   
+		AND E.CST_LVL IN(1,2,3)
+		<if test="subLength!=0 and params.length!=0">
+			AND substr(B.typ_code,1,${subLength}) in
+			<foreach collection="params" item="item" open="(" close=")" separator=",">
+				${item}
+			</foreach>
+		</if>
+		<if test="subLength=0 and params.length!=0">
+			AND B.typ_code in
+			<foreach collection="params" item="item" open="(" close=")" separator=",">
+				${item}
+			</foreach>
+		</if>
+		<if test="tit != null">
+	    	AND A.TIT LIKE '%${tit}%'
+	    </if>
+		<if test="trd_code != null">
+	    	AND D.TRD_CODE LIKE '%${trd_code}%'
+	    </if>
+		<if test="secu_sht != null">
+	    	AND D.SECU_SHT LIKE '%${secu_sht}%'
+	    </if>
+	    <if test="sDate != null">
+	    	AND A.PUB_DT >= to_date(#{sDate},'yyyy-MM-dd')
+	    </if>
+	    <if test="eDate != null">
+	    	AND A.PUB_DT &lt;= to_date(#{eDate},'yyyy-MM-dd')
+	    </if>       
+		ORDER BY A.PUB_DT DESC,B.TYP_CODE
+		<if test="flag==0 or flag==1">
+			,D.TRD_CODE 
+		</if>
+		) T )
+		where r &gt; #{startrow} and r &lt;= #{endrow}
+	</select>
+	
+</mapper>

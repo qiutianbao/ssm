@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/input-mask
+END
+jquery.inputmask.extensions.js
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/input-mask/jquery.inputmask.extensions.js
+END
+jquery.inputmask.numeric.extensions.js
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/input-mask/jquery.inputmask.numeric.extensions.js
+END
+jquery.inputmask.js
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/input-mask/jquery.inputmask.js
+END
+jquery.inputmask.phone.extensions.js
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/input-mask/jquery.inputmask.phone.extensions.js
+END
+jquery.inputmask.regex.extensions.js
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/input-mask/jquery.inputmask.regex.extensions.js
+END
+jquery.inputmask.date.extensions.js
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/datacenter/!svn/ver/435/trunk/production/bd-datacenter-manager/WebRoot/plugins/input-mask/jquery.inputmask.date.extensions.js
+END

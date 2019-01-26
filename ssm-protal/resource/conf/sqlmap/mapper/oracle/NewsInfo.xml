@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.portal.mapper.NewsInfoMapper">
+
+	<resultMap id="NewsInfo" type="com.bigdata.datacenter.portal.entity.NewsInfo">
+		<result property="id" column="ID"/>
+		<result property="pub_dt" column="PUB_DT"/>
+		<result property="tit" column="TIT"/>
+		<result property="med_name" column="MED_NAME"/>
+		<result property="aut" column="AUT"/>
+		<result property="cont_id" column="CONT_ID"/>
+		<result property="cont" column="CONT"/>
+	</resultMap>
+
+	<select id="listNewsInfo" resultMap="NewsInfo">
+		SELECT A.ID,
+       	       TO_CHAR(A.PUB_DT, 'yyyy-mm-dd') AS PUB_DT,
+		       A.TIT,
+		       A.MED_NAME,
+		       A.AUT,
+		       B.ID AS CONT_ID 
+   		FROM TXT_NWS_BAS A
+	    JOIN TXT_NWS_BAS_TXT B ON A.ID = B.ORIG_ID
+	    WHERE 1=1
+	    <if test="ZXLX.length!=0">
+	    	AND EXISTS(SELECT 1 FROM TXT_NWS_TYP C WHERE A.ID = C.ORIG_ID AND C.TYP_CODE IN
+	    	<foreach collection="ZXLX" item="zxlx" open="(" close=")" separator=",">
+			${zxlx}
+			</foreach>
+			)
+	    </if>
+	     <if test="SJDX.length!=0">
+	    	AND EXISTS(SELECT 1 FROM  TXT_NWS_ATT D WHERE  A.ID = D.ORIG_ID AND D.FLD_CODE =4 AND D.FLD_VAL IN
+	    	<foreach collection="SJDX" item="sjdx" open="(" close=")" separator=",">
+				${sjdx}
+			</foreach>
+			)
+	    </if>
+	     <if test="GJ.length!=0">
+	    	AND EXISTS(SELECT 1 FROM  TXT_NWS_ATT E WHERE  A.ID = E.ORIG_ID AND E.FLD_CODE =5 AND E.FLD_VAL IN
+	    	<foreach collection="GJ" item="gj" open="(" close=")" separator=",">
+				${gj}
+			</foreach>
+			)
+	    </if>
+	     <if test="SJSC.length!=0">
+	    	AND EXISTS(SELECT 1 FROM  TXT_NWS_ATT F WHERE A.ID = F.ORIG_ID AND F.FLD_CODE = 18 AND F.FLD_VAL IN
+	    	<foreach collection="SJSC" item="sjsc" open="(" close=")" separator=",">
+				${sjsc}
+			</foreach>
+			)
+	    </if>
+        AND A.PUB_DT >= ADD_MONTHS(TRUNC(SYSDATE),-1)
+		ORDER BY A.PUB_DT DESC,A.ID DESC
+	</select>
+	
+	<select id="findNewsContent" resultMap="NewsInfo">
+		SELECT  
+		 TO_CHAR(a.pub_dt, 'YYYY-MM-DD')as PUB_DT
+		         ,A.TIT
+		         ,A.MED_NAME
+		         ,A.AUT
+		         ,B.CONT                
+	    FROM TXT_NWS_BAS A     
+	    JOIN TXT_NWS_BAS_TXT B ON A.ID = B.ORIG_ID       
+	    AND B.ID=#{CONT_ID}
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">  
+		SELECT COUNT(*) FROM TXT_NWS_BAS A
+	    JOIN TXT_NWS_BAS_TXT B ON A.ID = B.ORIG_ID
+	    WHERE 1=1
+	    <if test="ZXLX != null">
+	    	AND EXISTS(SELECT 1 FROM TXT_NWS_TYP C WHERE A.ID = C.ORIG_ID AND C.TYP_CODE IN
+	    	<foreach collection="ZXLX" item="zxlx" open="(" close=")" separator=",">
+			${zxlx}
+			</foreach>
+			)
+	    </if>
+	     <if test="SJDX != null">
+	    	AND EXISTS(SELECT 1 FROM  TXT_NWS_ATT D WHERE  A.ID = D.ORIG_ID AND D.FLD_CODE =4 AND D.FLD_VAL IN
+	    	<foreach collection="SJDX" item="sjdx" open="(" close=")" separator=",">
+				${sjdx}
+			</foreach>
+			)
+	    </if>
+	     <if test="GJ != null">
+	    	AND EXISTS(SELECT 1 FROM  TXT_NWS_ATT E WHERE  A.ID = E.ORIG_ID AND E.FLD_CODE =5 AND E.FLD_VAL IN
+	    	<foreach collection="GJ" item="gj" open="(" close=")" separator=",">
+				${gj}
+			</foreach>
+			)
+	    </if>
+	     <if test="SJSC != null">
+	    	AND EXISTS(SELECT 1 FROM  TXT_NWS_ATT F WHERE A.ID = F.ORIG_ID AND F.FLD_CODE = 18 AND F.FLD_VAL IN
+	    	<foreach collection="SJSC" item="sjsc" open="(" close=")" separator=",">
+				${sjsc}
+			</foreach>
+			)
+	    </if>
+	    <if test="secuId != null">
+	    	AND EXISTS(SELECT 1 FROM TXT_NWS_SECU S WHERE A.ID = S.ORIG_ID AND S.SECU_ID = #{secuId})
+	    </if>
+	    <if test="tit != null">
+	    	AND A.TIT LIKE '%${tit}%'
+	    </if>
+	     <if test="aut != null">
+	    	AND A.AUT LIKE '%${aut}%'
+	    </if>
+	    <if test="med_name != null">
+	    	AND A.MED_NAME LIKE '%${med_name}%'
+	    </if>
+	    <if test="sDate != null">
+	    	AND A.PUB_DT >= to_date(#{sDate},'yyyy-MM-dd')
+	    </if>
+	    <if test="eDate != null">
+	    	AND A.PUB_DT &lt;= to_date(#{eDate},'yyyy-MM-dd')
+	    </if>
+	</select>
+
+
+	<select id="getSplitList" parameterType="java.util.Map" resultMap="NewsInfo" >  
+		select 
+		ID,
+		PUB_DT,
+		TIT,
+		MED_NAME,
+		AUT,
+		CONT_ID
+		from 
+		(Select rownum r, T.* from
+		(SELECT A.ID,
+       	       TO_CHAR(A.PUB_DT, 'yyyy-mm-dd') AS PUB_DT,
+		       A.TIT,
+		       A.MED_NAME,
+		       A.AUT,
+		       B.ID AS CONT_ID 
+   		FROM TXT_NWS_BAS A
+	    JOIN TXT_NWS_BAS_TXT B ON A.ID = B.ORIG_ID
+	    WHERE 1=1
+	    <if test="ZXLX != null">
+	    	AND EXISTS(SELECT 1 FROM TXT_NWS_TYP C WHERE A.ID = C.ORIG_ID AND C.TYP_CODE IN
+	    	<foreach collection="ZXLX" item="zxlx" open="(" close=")" separator=",">
+			${zxlx}
+			</foreach>
+			)
+	    </if>
+	     <if test="SJDX != null">
+	    	AND EXISTS(SELECT 1 FROM  TXT_NWS_ATT D WHERE  A.ID = D.ORIG_ID AND D.FLD_CODE =4 AND D.FLD_VAL IN
+	    	<foreach collection="SJDX" item="sjdx" open="(" close=")" separator=",">
+				${sjdx}
+			</foreach>
+			)
+	    </if>
+	     <if test="GJ != null">
+	    	AND EXISTS(SELECT 1 FROM  TXT_NWS_ATT E WHERE  A.ID = E.ORIG_ID AND E.FLD_CODE =5 AND E.FLD_VAL IN
+	    	<foreach collection="GJ" item="gj" open="(" close=")" separator=",">
+				${gj}
+			</foreach>
+			)
+	    </if>
+	     <if test="SJSC != null">
+	    	AND EXISTS(SELECT 1 FROM  TXT_NWS_ATT F WHERE A.ID = F.ORIG_ID AND F.FLD_CODE = 18 AND F.FLD_VAL IN
+	    	<foreach collection="SJSC" item="sjsc" open="(" close=")" separator=",">
+				${sjsc}
+			</foreach>
+			)
+	    </if>
+	    <if test="secuId != null">
+	    	AND EXISTS(SELECT 1 FROM TXT_NWS_SECU S WHERE A.ID = S.ORIG_ID AND S.SECU_ID = #{secuId})
+	    </if>
+	    <if test="tit != null">
+	    	AND A.TIT LIKE '%${tit}%'
+	    </if>
+	     <if test="aut != null">
+	    	AND A.AUT LIKE '%${aut}%'
+	    </if>
+	    <if test="med_name != null">
+	    	AND A.MED_NAME LIKE '%${med_name}%'
+	    </if>
+	    <if test="sDate != null">
+	    	AND A.PUB_DT >= to_date(#{sDate},'yyyy-MM-dd')
+	    </if>
+	    <if test="eDate != null">
+	    	AND A.PUB_DT &lt;= to_date(#{eDate},'yyyy-MM-dd')
+	    </if>
+		ORDER BY A.PUB_DT DESC,A.ID DESC) T)
+		where r &gt; #{startrow} and r &lt;= #{endrow}
+	</select>
+	
+</mapper>

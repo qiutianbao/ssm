@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.portal.mapper.StockMarketCalendarMapper">
+
+	<resultMap id="StockMarketCalendar" type="com.bigdata.datacenter.portal.entity.StockMarketCalendar">
+		<result property="bgn_dt" column="BGN_DT"/>
+		<result property="typ_name" column="TYP_NAME"/>
+		<result property="typ_code" column="TYP_CODE"/>
+		<result property="secu_id" column="SECU_ID"/>
+		<result property="trd_code" column="TRD_CODE"/>
+		<result property="secu_sht" column="SECU_SHT"/>
+		<result property="cont" column="CONT"/>
+		<result property="sn" column="SN"/>
+	</resultMap>
+	
+	<select id="list" resultMap="StockMarketCalendar" parameterType="map">
+		SELECT * FROM
+		(SELECT
+		to_char( A.BGN_DT, 'yyyy-mm-dd') as BGN_DT,
+		CASE A.TYP_CODEII WHEN 1000 THEN '股东大会' WHEN 1703 THEN '复牌' WHEN 1701 THEN
+		'停牌' WHEN 1702 THEN '停牌' WHEN 1704 THEN '停牌' WHEN 1705 THEN '停牌' ELSE
+		TYP_NAMEI||'【'||TYP_NAMEII||'】' END AS TYP_NAME,
+		DECODE(A.TYP_CODEII,1702,1,1701,2,1704,3,1705,4,1703,5,1000,55,TYP_CODEI)
+		AS SN,
+		DECODE(A.TYP_CODEII,1702,1,1701,2,1704,3,1705,4,1703,5,1000,55,TYP_CODEII)
+		AS TYP_CODE,
+		B.SECU_ID as SECU_ID ,
+		B.TRD_CODE as TRD_CODE ,
+		B.SECU_SHT as SECU_SHT,
+		A.NTC_CONT as CONT
+		FROM BAS_SPCL_NTC A
+		JOIN STKCN_BAS_INFO B
+		ON A.SECU_ID = B.SECU_ID
+		WHERE B.TYP_CODE IN (1001, 1002)
+		and B.LST_STS_CODE IN (1,2,5,7)
+		And B.EXCH_CODE in (101,105)
+		AND A.TYP_CODEI IN (11, 12, 13, 14, 15, 16,17, 18, 20, 21, 22, 31)
+		<!-- AND A.BGN_DT BETWEEN TRUNC(SYSDATE)-7 AND TRUNC(SYSDATE)+30 -->
+		<choose>
+			<when test="date != null and date != ''">
+				AND A.BGN_DT = to_date(#{date},'yyyy-MM-dd HH24:mi:ss')
+			</when>
+			<otherwise>
+				AND A.BGN_DT BETWEEN TRUNC(SYSDATE)-7 AND TRUNC(SYSDATE)+30
+			</otherwise>
+		</choose>
+		UNION
+		SELECT to_char( H.PUB_DT, 'yyyy-mm-dd') as BGN_DT,
+		TO_CHAR(H.BGN_DT,'YYYY-MM-DD')||H.TYP_NAMEII AS TYP_NAME,
+		H.TYP_CODEI AS SN,
+		H.TYP_CODEII AS TYP_CODE,
+		I.SECU_ID as SECU_ID ,
+		I.TRD_CODE as TRD_CODE ,
+		I.SECU_SHT as SECU_SHT,
+		H.NTC_CONT as CONT
+		FROM BAS_SPCL_NTC H
+		JOIN STKCN_BAS_INFO I
+		ON H.SECU_ID = I.SECU_ID
+		WHERE I.TYP_CODE IN (1001, 1002)
+		and I.LST_STS_CODE IN (1,2,5,7)
+		And I.EXCH_CODE in (101,105)
+		AND H.TYP_CODEI IN (19)
+		<!-- AND H.PUB_DT BETWEEN TRUNC(SYSDATE)-7 AND TRUNC(SYSDATE)+30 -->
+		<choose>
+			<when test="date != null and date != ''">
+				AND H.PUB_DT = to_date(#{date},'yyyy-MM-dd HH24:mi:ss')
+			</when>
+			<otherwise>
+				AND H.PUB_DT BETWEEN TRUNC(SYSDATE)-7 AND TRUNC(SYSDATE)+30
+			</otherwise>
+		</choose>
+		union
+		SELECT TO_CHAR(S.ISS_BGN_DT,'YYYY-MM-DD')AS BGN_DT,
+		S.TYP_NAME AS TYP_NAME,
+		S.SN AS SN,
+		S.TYP_CODE AS TYP_CODE,
+		S.SECU_ID as SECU_ID ,
+		NULL as TRD_CODE,
+		S.SECU_SHT as SECU_SHT,
+		S.CONT AS CONT
+		FROM(
+		SELECT H.ISS_BGN_DT,H.SECU_ID,'信托理财产品发行'AS TYP_NAME,91 AS SN,91 AS TYP_CODE,
+		H.CHI_NAME AS
+		SECU_SHT,H.CHI_NAME||TO_CHAR(H.ISS_BGN_DT,'YYYY-MM-DD')||'开始发行'AS CONT
+		FROM FPMCN_TRST_BAS H
+		UNION
+		SELECT I.ISS_BGN_DT,I.SECU_ID,'银行理财产品发行' AS TYP_NAME,92 AS SN,92 AS TYP_CODE,
+		I.CHI_NAME AS
+		SECU_SHT,I.CHI_NAME||TO_CHAR(I.ISS_BGN_DT,'YYYY-MM-DD')||'开始发行'AS CONT
+		FROM FPMCN_BK_BAS I
+		UNION
+		SELECT G.ISS_BGN_DT,G.SECU_ID,'券商集合理财产品发行' AS TYP_NAME,93 AS SN,93 AS
+		TYP_CODE,
+		G.CHI_NAME AS SECU_SHT,G.CHI_NAME||TO_CHAR(G.ISS_BGN_DT,'YYYY-MM-DD')||'开始发行'AS
+		CONT FROM FPMCN_BRK_BAS G
+		)S
+		<!-- WHERE S.ISS_BGN_DT BETWEEN TRUNC(SYSDATE)-7 AND TRUNC(SYSDATE)+30 -->
+		<where>
+			<choose>
+				<when test="date != null and date != ''">
+					AND S.ISS_BGN_DT = to_date(#{date},'yyyy-MM-dd HH24:mi:ss')
+				</when>
+				<otherwise>
+					AND S.ISS_BGN_DT BETWEEN TRUNC(SYSDATE)-7 AND TRUNC(SYSDATE)+30
+				</otherwise>
+			</choose>
+		</where>
+		
+		)
+		order by BGN_DT,SN,TYP_CODE,TRD_CODE
+			
+	</select>
+</mapper>

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/datacenter/!svn/ver/463/trunk/production/bd-datacenter-manager/WebRoot/css/ionicons-2.0.1/builder/scripts
+END
+generate_font.py
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/datacenter/!svn/ver/463/trunk/production/bd-datacenter-manager/WebRoot/css/ionicons-2.0.1/builder/scripts/generate_font.py
+END
+eotlitetool.py
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/datacenter/!svn/ver/463/trunk/production/bd-datacenter-manager/WebRoot/css/ionicons-2.0.1/builder/scripts/eotlitetool.py
+END
+sfnt2woff
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/datacenter/!svn/ver/463/trunk/production/bd-datacenter-manager/WebRoot/css/ionicons-2.0.1/builder/scripts/sfnt2woff
+END

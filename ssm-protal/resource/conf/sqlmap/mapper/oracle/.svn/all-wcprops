@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/datacenter/!svn/ver/767/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle
+END
+NewsStockCenter.xml
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/datacenter/!svn/ver/606/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/NewsStockCenter.xml
+END
+StockMarketCalendar.xml
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/datacenter/!svn/ver/645/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/StockMarketCalendar.xml
+END
+DcNewsmakerLabel.xml
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/datacenter/!svn/ver/752/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/DcNewsmakerLabel.xml
+END
+SecuCache.xml
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/datacenter/!svn/ver/748/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/SecuCache.xml
+END
+CompanyNotice.xml
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/datacenter/!svn/ver/747/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/CompanyNotice.xml
+END
+NewsInfo.xml
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/datacenter/!svn/ver/748/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/NewsInfo.xml
+END
+ResearchReport.xml
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/datacenter/!svn/ver/767/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/ResearchReport.xml
+END
+DcSysMenu.xml
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/datacenter/!svn/ver/733/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/DcSysMenu.xml
+END
+NewCentre.xml
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/datacenter/!svn/ver/768/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/NewCentre.xml
+END
+NewsMaker.xml
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/datacenter/!svn/ver/761/trunk/production/bd-datacenter-portal/resource/conf/sqlmap/mapper/oracle/NewsMaker.xml
+END

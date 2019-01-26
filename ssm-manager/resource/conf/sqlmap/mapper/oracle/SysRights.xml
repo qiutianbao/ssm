@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxtb.manager.mapper.sys.SysRightsMapper">
+
+	<resultMap id="sysRights" type="com.jxtb.manager.entity.sys.SysRights">
+		<result property="id" column="ID"/>
+		<result property="menuCode" column="MENU_CODE"/>
+		<result property="rightsCode" column="RIGHTS_CODE"/>
+		<result property="rightsName" column="RIGHTS_NAME"/>
+		<result property="rightsIntroduction" column="RIGHTS_INTRODUCTION"/>
+	</resultMap>
+	
+	
+
+
+	<insert id="insert" parameterType="com.jxtb.manager.entity.sys.SysRights" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO DC_SYS_RIGHTS ( 
+			<trim prefixOverrides=",">
+			<if test="id != null"> ,ID </if>	
+			<if test="menuCode != null"> ,MENU_CODE </if>	
+			<if test="rightsCode != null"> ,RIGHTS_CODE </if>	
+			<if test="rightsName != null"> ,RIGHTS_NAME </if>	
+			<if test="rightsIntroduction != null"> ,RIGHTS_INTRODUCTION </if>	
+			</trim>
+		) VALUES (
+			<trim prefixOverrides=",">
+			<if test="id != null"> ,#{id} </if>		       
+			<if test="menuCode != null"> ,#{menuCode} </if>		       
+			<if test="rightsCode != null"> ,#{rightsCode} </if>		       
+			<if test="rightsName != null"> ,#{rightsName} </if>		       
+			<if test="rightsIntroduction != null"> ,#{rightsIntroduction} </if>		       
+			</trim>
+		)
+	</insert>
+	
+	<delete id="delete">  
+		DELETE FROM DC_SYS_RIGHTS
+		WHERE ID = #{id}
+	</delete>
+	
+	<update id="update" parameterType="com.jxtb.manager.entity.sys.SysRights">
+		UPDATE DC_SYS_RIGHTS        
+		<set>
+			<if test="id != null"> ID = #{id}, </if>
+			<if test="menuCode != null"> MENU_CODE = #{menuCode}, </if>
+			<if test="rightsCode != null"> RIGHTS_CODE = #{rightsCode}, </if>
+			<if test="rightsName != null"> RIGHTS_NAME = #{rightsName}, </if>
+			<if test="rightsIntroduction != null"> RIGHTS_INTRODUCTION = #{rightsIntroduction}, </if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+	
+	<select id="get" parameterType="java.util.Map" resultMap="sysRights">
+		SELECT 
+			ID,
+			MENU_CODE,
+			RIGHTS_CODE,
+			RIGHTS_NAME,
+			RIGHTS_INTRODUCTION
+		FROM DC_SYS_RIGHTS
+		<where>
+			<if test="id != null"> ID = #{id} </if>
+		</where>
+	</select>
+	
+	<select id="list" parameterType="java.util.Map" resultMap="sysRights">
+		SELECT 
+			ID,
+			MENU_CODE,
+			RIGHTS_CODE,
+			RIGHTS_NAME,
+			RIGHTS_INTRODUCTION
+		FROM DC_SYS_RIGHTS
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="menuCode != null"> AND MENU_CODE = #{menuCode} </if>
+			<if test="rightsCode != null"> AND RIGHTS_CODE = #{rightsCode} </if>
+			<if test="rightsName != null"> AND RIGHTS_NAME = #{rightsName} </if>
+			<if test="rightsIntroduction != null"> AND RIGHTS_INTRODUCTION = #{rightsIntroduction} </if>
+		</where>
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">  
+		SELECT COUNT(*) FROM DC_SYS_RIGHTS
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="menuCode != null"> AND MENU_CODE = #{menuCode} </if>
+			<if test="rightsCode != null"> AND RIGHTS_CODE = #{rightsCode} </if>
+			<if test="rightsName != null"> AND RIGHTS_NAME = #{rightsName} </if>
+			<if test="rightsIntroduction != null"> AND RIGHTS_INTRODUCTION = #{rightsIntroduction} </if>
+		</where>
+	</select>
+
+
+	<select id="getSplitList" parameterType="java.util.Map" resultMap="sysRights" >
+		SELECT 
+			ID,
+			MENU_CODE,
+			RIGHTS_CODE,
+			RIGHTS_NAME,
+			RIGHTS_INTRODUCTION
+		FROM DC_SYS_RIGHTS
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="menuCode != null"> AND MENU_CODE = #{menuCode} </if>
+			<if test="rightsCode != null"> AND RIGHTS_CODE = #{rightsCode} </if>
+			<if test="rightsName != null"> AND RIGHTS_NAME = #{rightsName} </if>
+			<if test="rightsIntroduction != null"> AND RIGHTS_INTRODUCTION = #{rightsIntroduction} </if>
+		</where>
+		Limit #{startrow} , #{pagesize}
+	</select>
+
+
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.portal.mapper.NewStockCenterMapper">
+
+	<resultMap id="NewStockCenter" type="com.bigdata.datacenter.portal.entity.NewStockCenter">
+		<result property="sub_code" column="SUB_CODE"/>
+		<result property="iss_prc" column="ISS_PRC"/>
+		<result property="pe_dil" column="PE_DIL"/>
+		<result property="act_iss_shr" column="ACT_ISS_SHR"/>
+		<result property="act_iss_shr_on" column="ACT_ISS_SHR_ON"/>
+		<result property="sub_bgn_dt_on" column="SUB_BGN_DT_ON"/>
+		<result property="lst_dt" column="LST_DT"/>
+		<result property="succ_rat_on" column="SUCC_RAT_ON"/>
+		<result property="ttl_amt" column="TTL_AMT"/>
+		<result property="secu_id" column="SECU_ID"/>
+		<result property="trd_code" column="TRD_CODE"/>
+		<result property="secu_sht" column="SECU_SHT"/>
+		<!-- <result property="fmzd" column="fmzd"/>
+		<result property="fmzd_secu" column="fmzd_secu"/>
+		<result property="ABST" column="ABST"/>
+		<result property="CONT" column="CONT"/> -->
+	</resultMap>
+	
+	
+	<select id="list" resultMap="NewStockCenter" parameterType="map">
+		SELECT B.SECU_ID,B.TRD_CODE,B.SECU_SHT,
+		 A.SUB_CODE,<!-- 申购代码 -->
+		 TO_CHAR(A.ISS_PRC,'FM999999990.00') AS ISS_PRC,<!-- 发行价格    -->
+		 TO_CHAR(A.PE_DIL,'FM999999990.00') AS PE_DIL,<!-- 发行市盈率  -->
+		 TO_CHAR(A.ACT_ISS_SHR/10000,'FM999999999999') AS ACT_ISS_SHR,<!-- 发行总量（万股） -->
+		 TO_CHAR(A.ACT_ISS_SHR_ON/10000,'FM9999999999990.00') AS ACT_ISS_SHR_ON,<!-- 网上发行总量（万股）  --> 
+		 TO_CHAR(A.SUB_BGN_DT_ON ,'YYYY-MM-DD') AS SUB_BGN_DT_ON,<!-- 申购日期  -->
+		 TO_CHAR(A.LST_DT,'YYYY-MM-DD') AS LST_DT,<!-- 上市日期 -->
+		 TO_CHAR(A.SUCC_RAT_ON,'FM999999990.0000') AS SUCC_RAT_ON,<!-- 中签率% -->
+		 TO_CHAR(A.TTL_AMT/100000000,'FM999999999990.00') AS TTL_AMT<!-- 募集资金（亿元）   -->
+		 FROM STKCN_ISS A 
+		 JOIN BAS_SECU_INFO B ON A.SECU_ID=B.SECU_ID
+		 WHERE A.RS_TYP=10 AND B.TYP_CODE IN (1001,1002) AND B.LST_STS_CODE IN(1,2,5,7) and B.exch_code in (101,105)
+		       AND A.SUB_BGN_DT_ON>=ADD_MONTHS(TRUNC(SYSDATE),-36)
+		 ORDER BY A.SUB_BGN_DT_ON DESC
+	</select>
+</mapper>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.manager.mapper.DcSysRoleMapper">
+
+	<resultMap id="DcSysRole" type="com.bigdata.datacenter.manager.entity.DcSysRole">
+		<result property="id" column="ID"/>
+		<result property="systemCode" column="SYSTEM_CODE"/>
+		<result property="roleName" column="ROLE_NAME"/>
+		<result property="roleMemo" column="ROLE_MEMO"/>
+		<result property="creator" column="CREATOR"/>
+		<result property="createTime" column="CREATE_TIME"/>
+		<result property="modifier" column="MODIFIER"/>
+		<result property="modifyTime" column="MODIFY_TIME"/>
+	</resultMap>
+	
+	
+
+
+	<insert id="insert" parameterType="com.bigdata.datacenter.manager.entity.DcSysRole">
+		INSERT INTO DC_SYS_ROLE ( 
+			<trim prefixOverrides=",">
+			ID
+			<if test="systemCode != null"> ,SYSTEM_CODE </if>	
+			<if test="roleName != null"> ,ROLE_NAME </if>	
+			<if test="roleMemo != null"> ,ROLE_MEMO </if>	
+			<if test="creator != null"> ,CREATOR </if>	
+			<if test="createTime != null"> ,CREATE_TIME </if>	
+			<if test="modifier != null"> ,MODIFIER </if>	
+			<if test="modifyTime != null"> ,MODIFY_TIME </if>	
+			</trim>
+		) VALUES (
+			<trim prefixOverrides=",">
+			SEQ_DC_ID.nextval
+			<if test="systemCode != null"> ,#{systemCode} </if>		       
+			<if test="roleName != null"> ,#{roleName} </if>		       
+			<if test="roleMemo != null"> ,#{roleMemo} </if>		       
+			<if test="creator != null"> ,#{creator} </if>		       
+			<if test="createTime != null"> ,#{createTime} </if>		       
+			<if test="modifier != null"> ,#{modifier} </if>		       
+			<if test="modifyTime != null"> ,#{modifyTime} </if>		       
+			</trim>
+		)
+	</insert>
+	
+	<delete id="delete">  
+		DELETE FROM DC_SYS_ROLE
+		WHERE ID = #{id}
+	</delete>
+	
+	<update id="update" parameterType="com.bigdata.datacenter.manager.entity.DcSysRole">  
+		UPDATE DC_SYS_ROLE        
+		<set>
+			<if test="id != null"> ID = #{id}, </if>
+			<if test="systemCode != null"> SYSTEM_CODE = #{systemCode}, </if>
+			<if test="roleName != null"> ROLE_NAME = #{roleName}, </if>
+			<if test="roleMemo != null"> ROLE_MEMO = #{roleMemo}, </if>
+			<if test="creator != null"> CREATOR = #{creator}, </if>
+			<if test="createTime != null"> CREATE_TIME = #{createTime}, </if>
+			<if test="modifier != null"> MODIFIER = #{modifier}, </if>
+			<if test="modifyTime != null"> MODIFY_TIME = #{modifyTime}, </if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+	
+	<select id="get" parameterType="java.util.Map" resultMap="DcSysRole">  
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			ROLE_NAME,
+			ROLE_MEMO,
+			CREATOR,
+			CREATE_TIME,
+			MODIFIER,
+			MODIFY_TIME
+		FROM DC_SYS_ROLE
+		<where>
+			<if test="id != null"> ID = #{id} </if>
+		</where>
+	</select>
+	
+	<select id="list" parameterType="java.util.Map" resultMap="DcSysRole">  
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			ROLE_NAME,
+			ROLE_MEMO,
+			CREATOR,
+			CREATE_TIME,
+			MODIFIER,
+			MODIFY_TIME
+		FROM DC_SYS_ROLE
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="roleName != null"> AND ROLE_NAME = #{roleName} </if>
+			<if test="roleMemo != null"> AND ROLE_MEMO = #{roleMemo} </if>
+			<if test="creator != null"> AND CREATOR = #{creator} </if>
+			<if test="createTime != null"> AND CREATE_TIME = #{createTime} </if>
+			<if test="modifier != null"> AND MODIFIER = #{modifier} </if>
+			<if test="modifyTime != null"> AND MODIFY_TIME = #{modifyTime} </if>
+		</where>
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">  
+		SELECT COUNT(*) FROM DC_SYS_ROLE
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="roleName != null"> AND ROLE_NAME = #{roleName} </if>
+			<if test="roleMemo != null"> AND ROLE_MEMO = #{roleMemo} </if>
+			<if test="creator != null"> AND CREATOR = #{creator} </if>
+			<if test="createTime != null"> AND CREATE_TIME = #{createTime} </if>
+			<if test="modifier != null"> AND MODIFIER = #{modifier} </if>
+			<if test="modifyTime != null"> AND MODIFY_TIME = #{modifyTime} </if>
+		</where>
+	</select>
+
+
+	<select id="getSplitList" parameterType="java.util.Map" resultMap="DcSysRole" >  
+		SELECT 
+			ID,
+			SYSTEM_CODE,
+			ROLE_NAME,
+			ROLE_MEMO,
+			CREATOR,
+			CREATE_TIME,
+			MODIFIER,
+			MODIFY_TIME
+		FROM (SELECT rownum r, T.* FROM DC_SYS_ROLE T
+		<where>
+			<if test="id != null"> AND ID = #{id} </if>
+			<if test="systemCode != null"> AND SYSTEM_CODE = #{systemCode} </if>
+			<if test="roleName != null"> AND ROLE_NAME = #{roleName} </if>
+			<if test="roleMemo != null"> AND ROLE_MEMO = #{roleMemo} </if>
+			<if test="creator != null"> AND CREATOR = #{creator} </if>
+			<if test="createTime != null"> AND CREATE_TIME = #{createTime} </if>
+			<if test="modifier != null"> AND MODIFIER = #{modifier} </if>
+			<if test="modifyTime != null"> AND MODIFY_TIME = #{modifyTime} </if>
+		</where>
+		) where r &gt; #{startrow} and r &lt;= #{endrow}
+	</select>
+
+
+</mapper>

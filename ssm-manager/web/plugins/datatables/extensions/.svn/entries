@@ -1,0 +1,55 @@
+10
+
+dir
+742
+http://svn.chinabigdata.com/svn/datacenter/trunk/production/bd-datacenter-manager/WebRoot/plugins/datatables/extensions
+http://svn.chinabigdata.com/svn/datacenter
+
+
+
+2016-04-25T10:36:02.457533Z
+435
+yueguo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0b9f0de0-0601-4444-be8e-915a4da47982
+
+AutoFill
+dir
+
+ColVis
+dir
+
+ColReorder
+dir
+
+FixedColumns
+dir
+
+KeyTable
+dir
+
+Scroller
+dir
+
+FixedHeader
+dir
+
+TableTools
+dir
+
+Responsive
+dir
+

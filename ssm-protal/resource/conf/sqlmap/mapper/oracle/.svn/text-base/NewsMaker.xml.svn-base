@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bigdata.datacenter.portal.mapper.NewsMakerMapper">
+
+	<resultMap id="Newsmaker" type="com.bigdata.datacenter.portal.entity.Newsmaker">
+		<result property="id" column="id"/>
+		<result property="dt" column="dt"/>
+		<result property="tit" column="tit"/>
+		<result property="med_name" column="med_name"/>
+		<result property="aut" column="aut"/>
+		<result property="typ_name" column="typ_name"/>
+		<result property="zmzd" column="zmzd"/>
+		<result property="zmzd_secu" column="zmzd_secu"/>
+		<result property="zm" column="zm"/>
+		<result property="zm_secu" column="zm_secu"/>
+		<result property="zx" column="zx"/>
+		<result property="zx_secu" column="zx_secu"/>
+		<result property="fmzd" column="fmzd"/>
+		<result property="fmzd_secu" column="fmzd_secu"/>
+		<result property="ABST" column="ABST"/>
+		<result property="CONT" column="CONT"/>
+	</resultMap>
+	
+	<select id="listForSerach" resultMap="Newsmaker" parameterType="map">
+		select id,
+		dt,<!-- 发布日期 -->
+		tit,<!-- 标题 -->
+		med_name,<!-- 媒体出处 -->
+		aut,<!-- 作者 -->
+		typ_name, <!-- 事件标签 -->
+		zmzd,<!-- 正面重大 -->
+		zmzd_secu,<!-- 正面重大涉及证券 -->
+		zm,<!-- 正面 -->
+		zm_secu,<!-- 正面，正面涉及证券 -->
+		zx,<!-- 中性 -->
+		zx_secu,<!-- 中性，中性涉及证券 -->
+		fmzd,<!-- 负面重大 -->
+		fmzd_secu,<!-- 负面重大涉及证券 -->
+		fm,<!-- 负面 -->
+		fm_secu, <!-- 负面涉及证券 -->
+		ABST, <!-- 内容 -->
+		CONT
+		from (
+		select
+		a.id as id,
+		to_char(max(a.PUB_DT), 'yyyy-mm-dd')||' '||to_char(max(a.ent_time), 'hh24:mi')as dt,
+		max(a.TIT) as tit,
+		max(a.med_name) as med_name,
+		replace(max(a.aut),'□','') as aut,
+		max(i.typ_name)as typ_name,
+		(case when sum(case when (d.evt_dir = 1 and d.evt_st= 5) then 1 else 0
+		end)!=0 then '【正面重大】' else null end) as zmzd,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = 1 and d.evt_st =
+		5) then d.trd_code||d.secu_sht else null end),',',' '))as zmzd_secu,
+		(case when sum(case when (d.evt_dir = 1 and d.evt_st!= 5) then 1 else 0
+		end)!=0 then '【正面】' else null end)as zm,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = 1 and d.evt_st！=
+		5) then d.trd_code||d.secu_sht else null end),',',' ')) as zm_secu,
+		(case when sum(case when d.evt_dir =0 then 1 else 0 end)!=0 then '【中性】'
+		else null end) as zx,
+		to_char(replace(wmsys.wm_concat(case when d.evt_dir = 0 then d.trd_code||d.secu_sht else null end),',','
+		'))as zx_secu,
+		(case when sum(case when (d.evt_dir = -1 and d.evt_st = 5) then 1 else 0
+		end)!=0 then '【负面重大】' else null end) as fmzd,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = -1 and d.evt_st
+		= 5) then d.trd_code||d.secu_sht else null end),',',' ')) as fmzd_secu,
+		(case when sum(case when (d.evt_dir = -1 and d.evt_st!= 5) then 1 else
+		0 end)!=0 then '【负面】' else null end)as fm,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = -1 and d.evt_st
+		!= 5)then d.trd_code||d.secu_sht else null end),',',' ')) as fm_secu,
+		(select to_char(SUBSTR(CONT,1,200)) AS ABST from txt_nws_bas_txt where
+		a.id = orig_id) AS ABST,
+		(select CONT from txt_nws_bas_txt where a.id = orig_id) AS CONT
+		FROM txt_nws_bas a
+		left JOIN (
+		select b.orig_id as orig_id,b.secu_id as secu_id ,b.evt_dir as evt_dir
+		,b.evt_st as evt_st, c.trd_code as trd_code,c.secu_sht as secu_sht
+		from txt_nws_secu b
+		JOIN stkcn_bas_info c ON b.SECU_ID = c.SECU_ID
+		and c.LST_STS_CODE IN (1,2,5,7) AND c.TYP_CODE IN (1001, 1002)
+		)d on a.id=d.orig_id
+		JOIN (select E.ORIG_ID as orig_id, LISTAGG(F.CST_DESC,' | ') WITHIN
+		GROUP(ORDER BY F.CST_NUM) AS TYP_NAME
+		FROM TXT_NWS_TYP E
+		JOIN (SELECT CST_NUM, CST_DESC
+		FROM BAS_CST_INFO
+		WHERE CST_TYP = 10075) F ON E.TYP_CODE = F.CST_NUM and substr(e.typ_code, 1,
+		2) in (96)
+		GROUP BY E.ORIG_ID) i ON a.ID = i.ORIG_id
+		where a.pub_dt>=trunc(sysdate)-3
+		group by a.id
+		order by dt desc
+		)
+		<where>
+			<if test="tit != null and tit != ''">
+				AND tit like '%${tit}%'
+			</if>
+			<if test="typName != null and typName != ''">
+				AND typ_name like '%${typName}%'
+			</if>
+		</where>
+	</select>
+	
+	<select id="list" resultMap="Newsmaker" parameterType="map">
+		select id,
+		dt,<!-- 发布日期 -->
+		tit,<!-- 标题 -->
+		med_name,<!-- 媒体出处 -->
+		aut,<!-- 作者 -->
+		typ_name, <!-- 事件标签 -->
+		zmzd,<!-- 正面重大 -->
+		zmzd_secu,<!-- 正面重大涉及证券 -->
+		zm,<!-- 正面 -->
+		zm_secu,<!-- 正面，正面涉及证券 -->
+		zx,<!-- 中性 -->
+		zx_secu,<!-- 中性，中性涉及证券 -->
+		fmzd,<!-- 负面重大 -->
+		fmzd_secu,<!-- 负面重大涉及证券 -->
+		fm,<!-- 负面 -->
+		fm_secu, <!-- 负面涉及证券 -->
+		ABST, <!-- 内容 -->
+		CONT
+		from (
+		select
+		a.id as id,
+		to_char(max(a.PUB_DT), 'yyyy-mm-dd')||' '||to_char(max(a.ent_time), 'hh24:mi')as dt,
+		max(a.TIT) as tit,
+		max(a.med_name) as med_name,
+		replace(max(a.aut),'□','') as aut,
+		max(i.typ_name)as typ_name,
+		(case when sum(case when (d.evt_dir = 1 and d.evt_st= 5) then 1 else 0
+		end)!=0 then '【正面重大】' else null end) as zmzd,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = 1 and d.evt_st =
+		5) then d.trd_code||d.secu_sht else null end),',',' '))as zmzd_secu,
+		(case when sum(case when (d.evt_dir = 1 and d.evt_st!= 5) then 1 else 0
+		end)!=0 then '【正面】' else null end)as zm,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = 1 and d.evt_st！=
+		5) then d.trd_code||d.secu_sht else null end),',',' ')) as zm_secu,
+		(case when sum(case when d.evt_dir =0 then 1 else 0 end)!=0 then '【中性】'
+		else null end) as zx,
+		to_char(replace(wmsys.wm_concat(case when d.evt_dir = 0 then d.trd_code||d.secu_sht else null end),',','
+		'))as zx_secu,
+		(case when sum(case when (d.evt_dir = -1 and d.evt_st = 5) then 1 else 0
+		end)!=0 then '【负面重大】' else null end) as fmzd,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = -1 and d.evt_st
+		= 5) then d.trd_code||d.secu_sht else null end),',',' ')) as fmzd_secu,
+		(case when sum(case when (d.evt_dir = -1 and d.evt_st!= 5) then 1 else
+		0 end)!=0 then '【负面】' else null end)as fm,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = -1 and d.evt_st
+		!= 5)then d.trd_code||d.secu_sht else null end),',',' ')) as fm_secu,
+		(select to_char(SUBSTR(CONT,1,200)) AS ABST from txt_nws_bas_txt where
+		a.id = orig_id) AS ABST,
+		(select CONT from txt_nws_bas_txt where a.id = orig_id) AS CONT
+		FROM txt_nws_bas a
+		left JOIN (
+		select b.orig_id as orig_id,b.secu_id as secu_id ,b.evt_dir as evt_dir
+		,b.evt_st as evt_st, c.trd_code as trd_code,c.secu_sht as secu_sht
+		from txt_nws_secu b
+		JOIN stkcn_bas_info c ON b.SECU_ID = c.SECU_ID
+		and c.LST_STS_CODE IN (1,2,5,7) AND c.TYP_CODE IN (1001, 1002)
+		)d on a.id=d.orig_id
+		JOIN (select E.ORIG_ID as orig_id, LISTAGG(F.CST_DESC,' | ') WITHIN
+		GROUP(ORDER BY F.CST_NUM) AS TYP_NAME
+		FROM TXT_NWS_TYP E
+		JOIN (SELECT CST_NUM, CST_DESC
+		FROM BAS_CST_INFO
+		WHERE CST_TYP = 10075) F ON E.TYP_CODE = F.CST_NUM and substr(e.typ_code, 1,
+		2) in (96)
+		GROUP BY E.ORIG_ID) i ON a.ID = i.ORIG_id
+		where a.pub_dt>=trunc(sysdate)-3
+		group by a.id
+		order by dt desc
+		)
+	</select>
+	
+	<select id="getSplitList" resultMap="Newsmaker" parameterType="map">
+		select id,
+		dt,<!-- 发布日期 -->
+		tit,<!-- 标题 -->
+		med_name,<!-- 媒体出处 -->
+		aut,<!-- 作者 -->
+		typ_name, <!-- 事件标签 -->
+		zmzd,<!-- 正面重大 -->
+		zmzd_secu,<!-- 正面重大涉及证券 -->
+		zm,<!-- 正面 -->
+		zm_secu,<!-- 正面，正面涉及证券 -->
+		zx,<!-- 中性 -->
+		zx_secu,<!-- 中性，中性涉及证券 -->
+		fmzd,<!-- 负面重大 -->
+		fmzd_secu,<!-- 负面重大涉及证券 -->
+		fm,<!-- 负面 -->
+		fm_secu, <!-- 负面涉及证券 -->
+		ABST, <!-- 内容 -->
+		CONT
+		from (
+		select rownum r,
+		id,
+		dt,<!-- 发布日期 -->
+		tit,<!-- 标题 -->
+		med_name,<!-- 媒体出处 -->
+		aut,<!-- 作者 -->
+		typ_name, <!-- 事件标签 -->
+		zmzd,<!-- 正面重大 -->
+		zmzd_secu,<!-- 正面重大涉及证券 -->
+		zm,<!-- 正面 -->
+		zm_secu,<!-- 正面，正面涉及证券 -->
+		zx,<!-- 中性 -->
+		zx_secu,<!-- 中性，中性涉及证券 -->
+		fmzd,<!-- 负面重大 -->
+		fmzd_secu,<!-- 负面重大涉及证券 -->
+		fm,<!-- 负面 -->
+		fm_secu, <!-- 负面涉及证券 -->
+		ABST, <!-- 内容 -->
+		CONT
+		from (
+		select
+		a.id as id,
+		to_char(max(a.PUB_DT), 'yyyy-mm-dd')||' '||to_char(max(a.ent_time), 'hh24:mi')as dt,
+		max(a.TIT) as tit,
+		max(a.med_name) as med_name,
+		replace(max(a.aut),'□','') as aut,
+		max(i.typ_name)as typ_name,
+		(case when sum(case when (d.evt_dir = 1 and d.evt_st= 5) then 1 else 0
+		end)!=0 then '【正面重大】' else null end) as zmzd,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = 1 and d.evt_st =
+		5) then d.trd_code||d.secu_sht else null end),',',' '))as zmzd_secu,
+		(case when sum(case when (d.evt_dir = 1 and d.evt_st!= 5) then 1 else 0
+		end)!=0 then '【正面】' else null end)as zm,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = 1 and d.evt_st！=
+		5) then d.trd_code||d.secu_sht else null end),',',' ')) as zm_secu,
+		(case when sum(case when d.evt_dir =0 then 1 else 0 end)!=0 then '【中性】'
+		else null end) as zx,
+		to_char(replace(wmsys.wm_concat(case when d.evt_dir = 0 then d.trd_code||d.secu_sht else null end),',','
+		'))as zx_secu,
+		(case when sum(case when (d.evt_dir = -1 and d.evt_st = 5) then 1 else 0
+		end)!=0 then '【负面重大】' else null end) as fmzd,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = -1 and d.evt_st
+		= 5) then d.trd_code||d.secu_sht else null end),',',' ')) as fmzd_secu,
+		(case when sum(case when (d.evt_dir = -1 and d.evt_st!= 5) then 1 else
+		0 end)!=0 then '【负面】' else null end)as fm,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = -1 and d.evt_st
+		!= 5)then d.trd_code||d.secu_sht else null end),',',' ')) as fm_secu,
+		(select to_char(SUBSTR(CONT,1,200)) AS ABST from txt_nws_bas_txt where
+		a.id = orig_id) AS ABST,
+		(select CONT from txt_nws_bas_txt where a.id = orig_id) AS CONT
+		FROM txt_nws_bas a
+		left JOIN (
+		select b.orig_id as orig_id,b.secu_id as secu_id ,b.evt_dir as evt_dir
+		,b.evt_st as evt_st, c.trd_code as trd_code,c.secu_sht as secu_sht
+		from txt_nws_secu b
+		JOIN stkcn_bas_info c ON b.SECU_ID = c.SECU_ID
+		and c.LST_STS_CODE IN (1,2,5,7) AND c.TYP_CODE IN (1001, 1002)
+		)d on a.id=d.orig_id
+		JOIN (select E.ORIG_ID as orig_id, LISTAGG(F.CST_DESC,' | ') WITHIN
+		GROUP(ORDER BY F.CST_NUM) AS TYP_NAME
+		FROM TXT_NWS_TYP E
+		JOIN (SELECT CST_NUM, CST_DESC
+		FROM BAS_CST_INFO
+		WHERE CST_TYP = 10075) F ON E.TYP_CODE = F.CST_NUM and substr(e.typ_code, 1,
+		2) in (96)
+		GROUP BY E.ORIG_ID) i ON a.ID = i.ORIG_id
+		where a.pub_dt>=trunc(sysdate)-3
+		group by a.id
+		order by dt desc
+		)
+		<where>
+			<if test="tit != null and tit != ''">
+				AND tit like '%${tit}%'
+			</if>
+			<if test="typName != null and typName != ''">
+				AND typ_name like '%${typName}%'
+			</if>
+			<if test="zmzd != null and zmzd != ''">
+				AND zmzd is not null
+			</if>
+			<if test="zm != null and zm != ''">
+				AND zm is not null
+			</if>
+			<if test="zx != null and zx != ''">
+				AND zx is not null
+			</if>
+			<if test="fm != null and fm != ''">
+				AND fm is not null
+			</if>
+			<if test="fmzd != null and fmzd != ''">
+				AND fmzd is not null
+			</if>
+			<if test="Keywords != null">
+				AND
+				<foreach collection="Keywords" item="keyword" open="(" close=")" separator="OR">
+					(tit like '%${keyword}%' or zmzd_secu like '%${keyword}%' or zm_secu like '%${keyword}%' or zx_secu like '%${keyword}%' or fm_secu like '%${keyword}%' or fmzd_secu like '%${keyword}%')
+				</foreach>
+			</if>
+			<if test="EventTypes != null">
+				AND
+				<foreach collection="EventTypes" item="eventtype" open="(" close=")" separator="OR">
+					typ_name like '%${eventtype}%'
+				</foreach>
+			</if>
+		</where>
+		)
+		where r &gt; #{startrow} and r &lt;= #{endrow}
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">  
+		select count(*)
+		from (
+		select
+		a.id as id,
+		to_char(max(a.PUB_DT), 'yyyy-mm-dd')||' '||to_char(max(a.ent_time), 'hh24:mi')as dt,
+		max(a.TIT) as tit,
+		max(a.med_name) as med_name,
+		replace(max(a.aut),'□','') as aut,
+		max(i.typ_name)as typ_name,
+		(case when sum(case when (d.evt_dir = 1 and d.evt_st= 5) then 1 else 0
+		end)!=0 then '【正面重大】' else null end) as zmzd,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = 1 and d.evt_st =
+		5) then d.trd_code||d.secu_sht else null end),',',' '))as zmzd_secu,
+		(case when sum(case when (d.evt_dir = 1 and d.evt_st!= 5) then 1 else 0
+		end)!=0 then '【正面】' else null end)as zm,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = 1 and d.evt_st！=
+		5) then d.trd_code||d.secu_sht else null end),',',' ')) as zm_secu,
+		(case when sum(case when d.evt_dir =0 then 1 else 0 end)!=0 then '【中性】'
+		else null end) as zx,
+		to_char(replace(wmsys.wm_concat(case when d.evt_dir = 0 then d.trd_code||d.secu_sht else null end),',','
+		'))as zx_secu,
+		(case when sum(case when (d.evt_dir = -1 and d.evt_st = 5) then 1 else 0
+		end)!=0 then '【负面重大】' else null end) as fmzd,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = -1 and d.evt_st
+		= 5) then d.trd_code||d.secu_sht else null end),',',' ')) as fmzd_secu,
+		(case when sum(case when (d.evt_dir = -1 and d.evt_st!= 5) then 1 else
+		0 end)!=0 then '【负面】' else null end)as fm,
+		to_char(replace(wmsys.wm_concat(case when (d.evt_dir = -1 and d.evt_st
+		!= 5)then d.trd_code||d.secu_sht else null end),',',' ')) as fm_secu,
+		(select to_char(SUBSTR(CONT,1,200)) AS ABST from txt_nws_bas_txt where
+		a.id = orig_id) AS ABST,
+		(select CONT from txt_nws_bas_txt where a.id = orig_id) AS CONT
+		FROM txt_nws_bas a
+		left JOIN (
+		select b.orig_id as orig_id,b.secu_id as secu_id ,b.evt_dir as evt_dir
+		,b.evt_st as evt_st, c.trd_code as trd_code,c.secu_sht as secu_sht
+		from txt_nws_secu b
+		JOIN stkcn_bas_info c ON b.SECU_ID = c.SECU_ID
+		and c.LST_STS_CODE IN (1,2,5,7) AND c.TYP_CODE IN (1001, 1002)
+		)d on a.id=d.orig_id
+		JOIN (select E.ORIG_ID as orig_id, LISTAGG(F.CST_DESC,' | ') WITHIN
+		GROUP(ORDER BY F.CST_NUM) AS TYP_NAME
+		FROM TXT_NWS_TYP E
+		JOIN (SELECT CST_NUM, CST_DESC
+		FROM BAS_CST_INFO
+		WHERE CST_TYP = 10075) F ON E.TYP_CODE = F.CST_NUM and substr(e.typ_code, 1,
+		2) in (96)
+		GROUP BY E.ORIG_ID) i ON a.ID = i.ORIG_id
+		where a.pub_dt>=trunc(sysdate)-3
+		group by a.id
+		)
+		<where>
+			<if test="tit != null and tit != ''">
+				AND tit like '%${tit}%'
+			</if>
+			<if test="typName != null and typName != ''">
+				AND typ_name like '%${typName}%'
+			</if>
+			<if test="zmzd != null and zmzd != ''">
+				AND zmzd is not null
+			</if>
+			<if test="zm != null and zm != ''">
+				AND zm is not null
+			</if>
+			<if test="zx != null and zx != ''">
+				AND zx is not null
+			</if>
+			<if test="fm != null and fm != ''">
+				AND fm is not null
+			</if>
+			<if test="fmzd != null and fmzd != ''">
+				AND fmzd is not null
+			</if>
+			<if test="Keywords != null">
+				AND
+				<foreach collection="Keywords" item="keyword" open="(" close=")" separator="OR">
+					(tit like '%${keyword}%' or zmzd_secu like '%${keyword}%' or zm_secu like '%${keyword}%' or zx_secu like '%${keyword}%' or fm_secu like '%${keyword}%' or fmzd_secu like '%${keyword}%')
+				</foreach>
+			</if>
+			<if test="EventTypes != null">
+				AND
+				<foreach collection="EventTypes" item="eventtype" open="(" close=")" separator="OR">
+					typ_name like '%${eventtype}%'
+				</foreach>
+			</if>
+		</where>
+	</select>
+</mapper>

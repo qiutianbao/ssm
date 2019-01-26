@@ -1,0 +1,38 @@
+.afListBox{
+	background:#FFF;
+	z-index:9999;
+	width:130px;
+	position:absolute;
+	margin:0 0 0 0px;
+	color:#333333;
+	cursor:pointer;
+	float:left;
+	display:inline;
+	border-top:#1b74d0 1px solid;
+	border-bottom:#1b74d0 1px solid;
+	border-left:#1b74d0 1px solid;
+}
+.afListBox div{
+	border-bottom:1px #EAEAEA solid;
+	border-right:#1b74d0 1px solid;
+}
+.afFocusOn{
+	color:#000;
+	background:#DFE8F6;
+}
+.afRow{
+	color:#000;
+	line-height:23px;
+	padding:0 10px;
+	text-align:left;
+	font-size:13px
+}
+.af_err_temp{
+	position:absolute;
+	bottom:0;
+	left:0;
+	background:#333;
+	color:#FF0;
+	font-weight:900;
+	font-size:20px
+}
